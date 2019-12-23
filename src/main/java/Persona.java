@@ -3,13 +3,12 @@ package main.java;
 * Prova prova prova
 */
 public class Persona {
-	private int anni;
+	final int anni = 20;
 	
 	/**
 	   * The Constructor for the Persona class
 	   */
 	public Persona() {
-		this.anni = 18;
 	}
 	
 	/**
