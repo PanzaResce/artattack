@@ -1,4 +1,6 @@
 package main.java;
+import java.io.IOException;
+
 import main.java.FileDiv;
 
 
@@ -24,12 +26,19 @@ public class artattack {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		//FileDiv prova = new FileDiv("./test.txt",true,false,4096);
-		FileDiv prova = new FileDiv("./test.txt");
+		/*FileDiv prova = new FileDiv("./prova.PNG", true);
 		long numparts = prova.DivideFile();
 		
 		System.out.println("Finito : " + numparts + " parti");
-
+		*/
 		
+		FileDiv prova = new FileDiv("./prova0.frame.PNG", false);
+		try {
+			prova.MergeFile();
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+			
 	}
 
 }

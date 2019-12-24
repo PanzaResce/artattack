@@ -4,6 +4,7 @@
 package main.java;
 
 import java.io.BufferedOutputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -14,6 +15,10 @@ import java.io.RandomAccessFile;
  * <br>
  *  By default this class divide the file in even parts of 4Kb each, otherwise the part size can be specified
  * <br>
+ * The {@link main.java.FileDiv#splitmode splitmode} property determine the usage of the class, 
+ * if set to true the file passed to the constructor is the one who will be split, 
+ * if set to false the file will be the first generated from the split routine (Ex : 
+ * {@code file0.frame.txt} )
  * 
  * @author marco
  *
@@ -21,32 +26,48 @@ import java.io.RandomAccessFile;
 public class FileDiv {
 	protected boolean encrypted;
 	protected boolean zipped;
+	/**
+	 * splitmode determine the usage of the class, if set to true the {@link main.java.FileDiv#DivideFile DivideFile} 
+	 * method can be triggered otherwise the {@link main.java.FileDiv#MergeFile MergeFile} method can be triggered
+	 * 
+	 */
+	protected boolean splitmode;
+	/**
+	 * if {@link main.java.FileDiv#splitmode splitmode} is true it represents the file to be split, 
+	 * if false it is the first file generated from the {@link main.java.FileDiv#DivideFile DivideFile} operation
+	 */
 	protected String filename;
 	protected int BufferSize = 4096;
 	
 	final String EXT = ".frame";
+	final String CRYPT = ".crypt";
+	final String ZIP = ".zip";
 	
 	/**
-	 * The dafault {@code BufferSize} is 4096 (4Kb)
+	 * The default {@code BufferSize} is 4096 (4Kb)
 	 * 
 	 * @param fname The file name
+	 * @param mode Set to true for split-mode or false for merge-mode
 	 */
-	public FileDiv(String fname) {
+	public FileDiv(String fname, boolean mode) {
 		setFilename(fname);
-		setCrypted(false);
+		setSplitmode(mode);
+		setEncrypted(false);
 		setZipped(false);
 	}
 	
-	public FileDiv(String fname, int buffersize) {
+	public FileDiv(String fname, boolean mode, int buffersize) {
 		setFilename(fname);
-		setCrypted(false);
+		setSplitmode(mode);
+		setEncrypted(false);
 		setZipped(false);
 		setBufferSize(buffersize);
 	}
 	
-	public FileDiv(String fname, boolean crypt, boolean zip, int buffersize) {
+	public FileDiv(String fname, boolean mode, boolean crypt, boolean zip, int buffersize) {
 		setFilename(fname);
-		setCrypted(crypt);
+		setSplitmode(mode);
+		setEncrypted(crypt);
 		setZipped(zip);
 		setBufferSize(buffersize);
 	}
@@ -56,39 +77,87 @@ public class FileDiv {
 	 * <br>
 	 * Use the {@link main.java.FileDiv#readWrite readWrite} method to write
 	 * 
-	 * @return The number of parts or -1 if the operation fails
+	 * @return The number of parts, -1 if the operation fails 0 if the splitmode is false
 	 */
 	public long DivideFile() {
-		try {
-			RandomAccessFile raf = new RandomAccessFile(getFilename(), "r");
-	        long sourceSize = raf.length();
-	        long bytesPerSplit = getBufferSize() ;
-	        long numSplits = sourceSize / bytesPerSplit;
-	        long remainingBytes = sourceSize - (bytesPerSplit * numSplits);
-	
-	        for(int destIx=0; destIx < numSplits; destIx++) {
-	            BufferedOutputStream bw = new BufferedOutputStream(new FileOutputStream(generateOutputFilename(destIx)));
-                readWrite(raf, bw, bytesPerSplit);            
-	            bw.close();
-	        }
-	        if(remainingBytes > 0) {
-	            BufferedOutputStream bw = new BufferedOutputStream(new FileOutputStream(generateOutputFilename(numSplits)));
-	            readWrite(raf, bw, remainingBytes);
-	            bw.close();
-	        }
-            raf.close();
-            return (remainingBytes > 0) ? numSplits+1 : numSplits;
-            
-		}catch(IOException e) {
-			System.out.println(e.getStackTrace());
-			return -1;
+		if(isSplitmode()) {
+			try {
+				RandomAccessFile raf = new RandomAccessFile(getFilename(), "r");
+		        long sourceSize = raf.length();
+		        long bytesPerSplit = getBufferSize() ;
+		        long numSplits = sourceSize / bytesPerSplit;
+		        long remainingBytes = sourceSize - (bytesPerSplit * numSplits);
+		
+		        for(int destIx=0; destIx < numSplits; destIx++) {
+		            BufferedOutputStream bw = new BufferedOutputStream(new FileOutputStream(generateOutputFilename(destIx)));
+	                readWrite(raf, bw, bytesPerSplit);            
+		            bw.close();
+		        }
+		        if(remainingBytes > 0) {
+		            BufferedOutputStream bw = new BufferedOutputStream(new FileOutputStream(generateOutputFilename(numSplits)));
+		            readWrite(raf, bw, remainingBytes);
+		            bw.close();
+		        }
+	            raf.close();
+	            return (remainingBytes > 0) ? numSplits+1 : numSplits;
+	            
+			}catch(IOException e) {
+				System.out.println(e.getStackTrace());
+				return -1;
+			}
 		}
+		return 0;
 		
 	}
 	
 	/**
+	 * Take the first file generated from the previous {@link main.java.FileDiv#DivideFile DivideFile} operation
+	 * and merge all the parts <br>
+	 * By default this method doesn't delete the parts
+	 * @return 1 if the operation worked, 0 otherwise
+	 * @throws IOException The exception is thrown by the {@code FileNotFoundException} catch if the file passed to 
+	 * the constructor does not exists, otherwise the {@code FileNotFoundException} return 1 to the function
+	 */
+	public int MergeFile() throws IOException {
+		if(!isSplitmode()) {
+			int index=0;
+			BufferedOutputStream bw = null;
+			
+			String filename = getFilename();
+			String plainName = getFilePlainName(filename).substring(0, getFilePlainName(filename).length()-1);
+			String ext = getFileExt(filename);
+			String outputFilename = plainName+ext;
+			
+			try {	
+	            bw = new BufferedOutputStream(new FileOutputStream(outputFilename));
+	            
+	          
+	            while(true) {
+	            	RandomAccessFile raf = new RandomAccessFile(plainName+index+EXT+ext, "r");
+	            	readWrite(raf, bw, raf.length());
+	            	index++;
+	            	raf.close();
+	            }
+	            
+				//System.out.print(plainName+0+EXT+ext);
+	
+			}catch(FileNotFoundException e) {
+				if(index!=0) {
+					bw.close();
+					return 1;
+				}else {
+					throw new IOException("File "+filename+" not found, choose an existing file");
+				}
+			}catch(IOException e) {
+				e.printStackTrace();
+				return 0;
+			}
+		}
+		return 0;
+	}
+	
+	/**
 	 * This method read from {@code source} {@code numBytes} bytes and write to {@code dest}
-	 * 
 	 * 
 	 * @param source Source stream, in this class is a RandomAccessFile by default
 	 * @param dest Destination stream
@@ -105,11 +174,34 @@ public class FileDiv {
 	    }
 	}
 	
+	/**
+	 * Extract the name of the file from the full name, if this is used in merge-mode 
+	 * remove the {@value main.java.FileDiv#EXT} from the file name
+	 * @param filename {@link main.java.FileDiv#filename filename}
+	 * @return Ex : {@code file1.txt ---> file1} or if {@link main.java.FileDiv#splitmode splitmode} = false 
+	 * {@code file0.frame.txt ---> file0}
+	 */
+	protected String getFilePlainName(String filename) {
+		if(filename.contains(EXT)) {
+			String app = filename.substring(0,filename.lastIndexOf("."));
+			return app.substring(0, app.lastIndexOf("."));
+		}else {
+			return filename.substring(0,filename.lastIndexOf("."));
+		}
+	}
 	
 	/**
-	 * 
+	 * Extract the extension from the file name
+	 * @param filename {@link main.java.FileDiv#filename filename}
+	 * @return Ex : {@code file1.txt ----> .txt}
+	 */
+	protected String getFileExt(String filename) {
+		return filename.substring(filename.lastIndexOf("."), filename.length());
+	}
+	
+	/**
 	 * This method generate the name of the part's file based on the {@link main.java.FileDiv#encrypted encrypted} and 
-	 * {@link main.java.FileDiv#zipped zipped} values and the {@code index} of the part
+	 * {@link main.java.FileDiv#zipped zipped} values and the {@code index} of the part<br>
 	 * The constant {@value main.java.FileDiv#EXT} is used to define the used division routine
 	 * 
 	 * 
@@ -119,30 +211,29 @@ public class FileDiv {
 	protected String generateOutputFilename(long index) {
 		String filename = getFilename();
 		
-		String plainName = filename.substring(0,filename.lastIndexOf("."));
-		String ext = filename.substring(filename.lastIndexOf("."), filename.length());
+		String plainName = getFilePlainName(filename);
+		String ext = getFileExt(filename);
 		
-		if(isCrypted()) {
-			return plainName+index+EXT+".crypt"+ext;
+		if(isEncrypted()) {
+			return plainName+index+EXT+CRYPT+ext;
 		}else if(isZipped()) {
-			return plainName+index+EXT+".zip"+ext;
+			return plainName+index+EXT+ZIP+ext;
 		}
 		
 		return plainName+index+EXT+ext;
-	}
-	
+	}	
 
 	/**
 	 * @return true if the file is encrypted
 	 */
-	public boolean isCrypted() {
+	public boolean isEncrypted() {
 		return encrypted;
 	}
 
 	/**
 	 * @param encrypted the encrypted to set
 	 */
-	public void setCrypted(boolean encrypted) {
+	public void setEncrypted(boolean encrypted) {
 		this.encrypted = encrypted;
 	}
 
@@ -158,6 +249,20 @@ public class FileDiv {
 	 */
 	public void setZipped(boolean zipped) {
 		this.zipped = zipped;
+	}
+	
+	/**
+	 * @return the splitmode
+	 */
+	public boolean isSplitmode() {
+		return splitmode;
+	}
+
+	/**
+	 * @param splitmode the splitmode to set
+	 */
+	public void setSplitmode(boolean splitmode) {
+		this.splitmode = splitmode;
 	}
 
 	/**
@@ -187,8 +292,5 @@ public class FileDiv {
 	public void setBufferSize(int BufferSize) {
 		this.BufferSize = BufferSize;
 	}
-	
-	
-	
 	
 }
