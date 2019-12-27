@@ -1,7 +1,7 @@
 /**
  * 
  */
-package main.java;
+package com.artattack;
 
 import java.io.BufferedOutputStream;
 import java.io.FileNotFoundException;
@@ -15,7 +15,7 @@ import java.io.RandomAccessFile;
  * <br>
  *  By default this class divide the file in even parts of 4Kb each, otherwise the part size can be specified
  * <br>
- * The {@link main.java.FileDiv#splitmode splitmode} property determine the usage of the class, 
+ * The {@link FileDiv#splitmode splitmode} property determine the usage of the class, 
  * if set to true the file passed to the constructor is the one who will be split, 
  * if set to false the file will be the first generated from the split routine (Ex : 
  * {@code file0.frame.txt} )
@@ -27,14 +27,14 @@ public class FileDiv {
 	protected boolean encrypted;
 	protected boolean zipped;
 	/**
-	 * splitmode determine the usage of the class, if set to true the {@link main.java.FileDiv#DivideFile DivideFile} 
-	 * method can be triggered otherwise the {@link main.java.FileDiv#MergeFile MergeFile} method can be triggered
+	 * splitmode determine the usage of the class, if set to true the {@link FileDiv#DivideFile DivideFile} 
+	 * method can be triggered otherwise the {@link FileDiv#MergeFile MergeFile} method can be triggered
 	 * 
 	 */
 	protected boolean splitmode;
 	/**
-	 * if {@link main.java.FileDiv#splitmode splitmode} is true it represents the file to be split, 
-	 * if false it is the first file generated from the {@link main.java.FileDiv#DivideFile DivideFile} operation
+	 * if {@link FileDiv#splitmode splitmode} is true it represents the file to be split, 
+	 * if false it is the first file generated from the {@link FileDiv#DivideFile DivideFile} operation
 	 */
 	protected String filename;
 	protected int BufferSize = 4096;
@@ -73,9 +73,9 @@ public class FileDiv {
 	}
 	
 	/**
-	 * Divide the file in even parts based on {@link main.java.FileDiv#BufferSize BufferSize}
+	 * Divide the file in even parts based on {@link FileDiv#BufferSize BufferSize}
 	 * <br>
-	 * Use the {@link main.java.FileDiv#readWrite readWrite} method to write
+	 * Use the {@link FileDiv#readWrite readWrite} method to write
 	 * 
 	 * @return The number of parts, -1 if the operation fails 0 if the splitmode is false
 	 */
@@ -111,7 +111,7 @@ public class FileDiv {
 	}
 	
 	/**
-	 * Take the first file generated from the previous {@link main.java.FileDiv#DivideFile DivideFile} operation
+	 * Take the first file generated from the previous {@link FileDiv#DivideFile DivideFile} operation
 	 * and merge all the parts <br>
 	 * By default this method doesn't delete the parts
 	 * @return 1 if the operation worked, 0 otherwise
@@ -176,9 +176,9 @@ public class FileDiv {
 	
 	/**
 	 * Extract the name of the file from the full name, if this is used in merge-mode 
-	 * remove the {@value main.java.FileDiv#EXT} from the file name
-	 * @param filename {@link main.java.FileDiv#filename filename}
-	 * @return Ex : {@code file1.txt ---> file1} or if {@link main.java.FileDiv#splitmode splitmode} = false 
+	 * remove the {@value FileDiv#EXT} from the file name
+	 * @param filename {@link FileDiv#filename filename}
+	 * @return Ex : {@code file1.txt ---> file1} or if {@link FileDiv#splitmode splitmode} = false 
 	 * {@code file0.frame.txt ---> file0}
 	 */
 	protected String getFilePlainName(String filename) {
@@ -192,7 +192,7 @@ public class FileDiv {
 	
 	/**
 	 * Extract the extension from the file name
-	 * @param filename {@link main.java.FileDiv#filename filename}
+	 * @param filename {@link FileDiv#filename filename}
 	 * @return Ex : {@code file1.txt ----> .txt}
 	 */
 	protected String getFileExt(String filename) {
@@ -200,9 +200,9 @@ public class FileDiv {
 	}
 	
 	/**
-	 * This method generate the name of the part's file based on the {@link main.java.FileDiv#encrypted encrypted} and 
-	 * {@link main.java.FileDiv#zipped zipped} values and the {@code index} of the part<br>
-	 * The constant {@value main.java.FileDiv#EXT} is used to define the used division routine
+	 * This method generate the name of the part's file based on the {@link FileDiv#encrypted encrypted} and 
+	 * {@link FileDiv#zipped zipped} values and the {@code index} of the part<br>
+	 * The constant {@value FileDiv#EXT} is used to define the used division routine
 	 * 
 	 * 
 	 * @param index The index of the file part
