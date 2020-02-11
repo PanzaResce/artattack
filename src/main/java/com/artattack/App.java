@@ -6,7 +6,8 @@ import com.artattack.FileDiv;
 
 
 /**
-* <h1>File Splitter</h1>
+*
+* File Splitter
 * <p>This program takes one file as input and divide it following different split routines </p><br>
 * <ul>
 * 	<li>By default it divides file by a frame size taken as input</li>
@@ -26,19 +27,28 @@ public class App{
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		FileDiv prova = new FileDiv("./test.txt", true);
-		long numparts = prova.DivideFile();
+		int scelta = 2;
+		switch(scelta) {
+			case 1 :
+				//FileDiv split = new FileDiv("./prova.png", true, false, true, 4096);
+				PartDiv split = new PartDiv("./test.txt", true, true, false, 6);
+				//prova.generateKey();
+				long numparts = split.DivideFile();
+				
+				System.out.println("Finito : " + numparts + " parti");
+				break;
+			case 2 : 
+				//FileDiv merge = new FileDiv("./test0.frame.txt", false, false, false, 4096);
+				PartDiv merge = new PartDiv("./test0.part.crypt.txt", false, true, false, 6);
+				try {
+					merge.MergeFile();
+					System.out.println("Finito !!");
+				}catch(IOException e) {
+					e.printStackTrace();
+				}
+				break;
+		}
 		
-		System.out.println("Finito : " + numparts + " parti");
-		
-		
-		//FileDiv prova = new FileDiv("./test0.frame.txt", false);
-		/*try {
-			prova.MergeFile();
-		}catch(IOException e) {
-			e.printStackTrace();
-		}*/
-			
 	}
 
 }
