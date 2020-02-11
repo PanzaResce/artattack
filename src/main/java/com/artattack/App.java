@@ -31,15 +31,17 @@ public class App{
 		switch(scelta) {
 			case 1 :
 				//FileDiv split = new FileDiv("./prova.png", true, false, true, 4096);
-				PartDiv split = new PartDiv("./test.txt", true, true, false, 6);
-				//prova.generateKey();
+				//PartDiv split = new PartDiv("./test.txt", true, false, false, 6);
+				DimDiv split = new DimDiv("./test.txt", true, false, true);
 				long numparts = split.DivideFile();
 				
 				System.out.println("Finito : " + numparts + " parti");
 				break;
 			case 2 : 
 				//FileDiv merge = new FileDiv("./test0.frame.txt", false, false, false, 4096);
-				PartDiv merge = new PartDiv("./test0.part.crypt.txt", false, true, false, 6);
+				//PartDiv merge = new PartDiv("./test0.part.txt", false, false, false, 6);
+				DimDiv merge = new DimDiv("./test0.dim.txt.zip", false, false, true);
+
 				try {
 					merge.MergeFile();
 					System.out.println("Finito !!");

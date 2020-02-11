@@ -51,6 +51,10 @@ public class FileDiv {
 	 * if false it is the first file generated from the {@link FileDiv#DivideFile DivideFile} operation
 	 */
 	protected String filename;
+	
+	/**
+	 * Define the size of each file after the division 
+	 */
 	protected int BufferSize = 4096;
 	
 	/**
@@ -77,7 +81,10 @@ public class FileDiv {
 	 */
 	protected String ZIPs = "";
 	
-	final String EXT = ".frame";
+	/**
+	 * set to a specified value for each subclass of the hierarchy
+	 */
+	protected String EXT = ".frame";
 	final String CRYPT = ".crypt";
 	final String ZIP = ".zip";
 	
@@ -520,5 +527,18 @@ public class FileDiv {
 		this.key = key;
 	}
 	
+	/**
+	 * @return the eXT
+	 */
+	public String getEXT() {
+		return EXT;
+	}
+
+	/**
+	 * @param eXT the eXT to set
+	 */
+	public void setEXT(String eXT) {
+		EXT = eXT;
+	}
 	
 }
