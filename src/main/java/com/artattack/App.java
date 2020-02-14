@@ -27,23 +27,42 @@ public class App{
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		
+		
+        
+		
 		int scelta = 2;
 		switch(scelta) {
 			case 1 :
-				//FileDiv split = new FileDiv("./prova.png", true, false, true, 4096);
-				//PartDiv split = new PartDiv("./test.txt", true, false, false, 6);
-				DimDiv split = new DimDiv("./test.txt", true, false, true);
-				long numparts = split.DivideFile();
+				FileDiv split1 = new FileDiv("./prova.png", true, false, false, 4096);
+				PartDiv split2 = new PartDiv("./test.txt", true, false, false, 6);
+				DimDiv split3 = new DimDiv("./home.jpg", true, false, false);
+				//long numparts = split.DivideFile();
 				
-				System.out.println("Finito : " + numparts + " parti");
+				DivisionHandler de = new DivisionHandler();
+				
+				de.addFile(split1);
+				de.addFile(split2);
+				de.addFile(split3);
+
+				de.split();
+				
+				//System.out.println("Finito : " + numparts + " parti");
 				break;
 			case 2 : 
-				//FileDiv merge = new FileDiv("./test0.frame.txt", false, false, false, 4096);
-				//PartDiv merge = new PartDiv("./test0.part.txt", false, false, false, 6);
-				DimDiv merge = new DimDiv("./test0.dim.txt.zip", false, false, true);
+				FileDiv merge1 = new FileDiv("./prova0.frame.png", false, false, false, 4096);
+				PartDiv merge2 = new PartDiv("./test0.part.txt", false, false, false, 6);
+				DimDiv merge3 = new DimDiv("./home0.dim.jpg", false, false, false);
 
 				try {
-					merge.MergeFile();
+					DivisionHandler dh = new DivisionHandler();
+					
+					dh.addFile(merge1);
+					dh.addFile(merge2);
+					dh.addFile(merge3);
+
+					dh.merge();
+					
 					System.out.println("Finito !!");
 				}catch(IOException e) {
 					e.printStackTrace();

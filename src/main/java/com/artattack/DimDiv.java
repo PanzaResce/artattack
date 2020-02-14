@@ -44,7 +44,7 @@ public class DimDiv extends FileDiv{
 			System.out.println("Grandezza File: " + humanReadableByteCountBin(flength));
 			
 			do {
-				System.out.println("Specificare grandezza parte in Kb ("+ remains + " Kb rimanenti)");
+				System.out.println("Specificare grandezza parte in Kb ("+ humanReadableByteCountBin(remains) + " rimanenti)");
 				
 				part = Long.parseLong(System.console().readLine()) * 1024;
 				
