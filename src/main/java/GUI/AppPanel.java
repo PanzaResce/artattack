@@ -26,7 +26,7 @@ import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 
-public class AppPanel extends JPanel{
+public abstract class AppPanel extends JPanel{
 	
 	
 	protected JPanel container;
@@ -140,29 +140,6 @@ public class AppPanel extends JPanel{
 		comp.setBorder(new CompoundBorder(border, margin));
 	}
 	
-	protected void addElementToContainer() {
-		String s[] = {"FrameDiv", "PartDiv", "DimDiv"};
-		
-		/*
-		JComboBox jobType = new JComboBox(s);
-
-		JLabel fileName = new JLabel("Nome File");
-		
-		JRadioButton zipBtn = new JRadioButton("Zip");
-
-		JRadioButton cryptBtn = new JRadioButton("Crypt");
-
-		JPanel job = new JPanel(new FlowLayout(FlowLayout.CENTER, jobPadding, jobPadding));
-		job.add(fileName);
-		job.add(zipBtn);
-		job.add(cryptBtn);
-		job.add(jobType);
-		*/
-		
-		JobUI job = new JobUI();
-		
-		container.add(job);
-	
-	}
+	protected abstract void addElementToContainer();
 	
 }

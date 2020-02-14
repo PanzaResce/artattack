@@ -123,7 +123,7 @@ public class AppFrame extends JFrame{
 	 * @param jpl the jpl to set
 	 */
 	public void setJpl(int w, int h, Color c) {
-		this.jpl = new AppPanel(w,h,c);
+		this.jpl = new MergePanel(w,h,c);
 	}
 
 	/**
