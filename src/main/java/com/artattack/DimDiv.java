@@ -9,6 +9,18 @@ import java.util.ArrayList;
 
 public class DimDiv extends FileDiv{
 	
+	/**
+	 * This arraylist is used to store the size of each file's part, this needs to be handled 
+	 * by the user of the class <br>
+	 * By default it split the file in two equal parts
+	 */
+	public ArrayList<Long> division = new ArrayList<Long>();
+	
+	/**
+	 * The constructor simply call the father's one 
+	 * @param fname
+	 * @param mode
+	 */
 	public DimDiv(String fname, boolean mode) {
 		super(fname, mode);
 		setEXT(".dim");
@@ -23,18 +35,21 @@ public class DimDiv extends FileDiv{
 	
 	/**
 	 * Ask the user the dimension of each file part, the dimension is asked in Kb
+	 * <br>
+	 * It divides the file in two equal parts if {@link DimDiv#division division} array is empty
 	 * 
 	 * @return the number of parts, -1 if the operation fails 0 if the splitmode is false
 	 */
 	public long DivideFile() {
 		if(isSplitmode()) {
 			if(isEncrypted()) {
-				System.out.println("Inserisci la psw per cifrare l'archivio");
+				//System.out.println("Inserisci la psw per cifrare l'archivio");
 				
-				setPsw(new String(System.console().readPassword()));
+				//setPsw(new String(System.console().readPassword()));
 				setKey(generateKey());
 			}
-				
+			
+			/*
 			File f = new File(getFilename());
 			long flength = f.length();
 			ArrayList<Long> division = new ArrayList<Long>();
@@ -56,8 +71,12 @@ public class DimDiv extends FileDiv{
 				division.add(part);
 				
 			}while(remains > 0);
-			
+			*/
+			//REFACTOR//
 			try {	
+				//set to default split method if empty
+				if(division.isEmpty())
+					setDivision();
 				RandomAccessFile raf = new RandomAccessFile(getFilename(), "r");
 				
 				for(int i = 0; i < division.size(); i++) {
@@ -75,6 +94,17 @@ public class DimDiv extends FileDiv{
 			}
 		}
 		return 0;
+	}
+	
+	/**
+	 * Function for default division method, split the file in two equal parts
+	 */
+	private void setDivision() {
+		File f = new File(getFilename());
+		long flength = f.length();
+		
+		division.add(flength / 2);
+		division.add(flength - (flength / 2));
 	}
 	
 	private static String humanReadableByteCountBin(long bytes) {

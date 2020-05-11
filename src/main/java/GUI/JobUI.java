@@ -19,13 +19,28 @@ public class JobUI extends JPanel{
 	 */
 	protected int jobPadding = 45;
 
-	public JobUI() {
+	public JobUI(String fname) {
 		
 		setLayout(new FlowLayout(FlowLayout.CENTER, jobPadding, jobPadding));
 		
-		fileName = new JLabel("Nome File");
+		fileName = new JLabel(fname);
 		this.add(fileName);
 		
 	}
+
+	/**
+	 * @return the fileName
+	 */
+	public JLabel getFileName() {
+		return fileName;
+	}
+
+	/**
+	 * @param fileName the fileName to set
+	 */
+	public void setFileName(JLabel fileName) {
+		this.fileName = fileName;
+	}
+	
 	
 }

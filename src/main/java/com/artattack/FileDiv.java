@@ -188,9 +188,9 @@ public class FileDiv {
 	public int MergeFile() throws IOException {
 		if(!isSplitmode()) {
 			if(isEncrypted()) {
-				System.out.println("Inserisci la psw per poter leggere l'archivio");
+				//System.out.println("Inserisci la psw per poter leggere l'archivio");
 				
-				setPsw(new String(System.console().readPassword()));
+				//setPsw(new String(System.console().readPassword()));
 				setKey(getKeyFromArchive());
 			}
 			

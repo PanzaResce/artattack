@@ -31,7 +31,7 @@ public class App{
 		AppFrame a = new AppFrame("coso", new Color(242,242,242));
 		
 		a.setVisible(true);
-		
+
 		/*
 		int scelta = 2;
 		switch(scelta) {

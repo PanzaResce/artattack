@@ -2,12 +2,16 @@ package GUI;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -26,20 +30,27 @@ import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 
-public abstract class AppPanel extends JPanel{
+public abstract class AppPanel<Job extends JobUI> extends JPanel implements ActionListener{
 	
 	
 	protected JPanel container;
 	
-	protected JButton startBtn;
-	protected JButton fileBtn;
+	protected JButton startBtn = new JButton("Start");
+	protected JButton fileBtn = new JButton("File");;
 	protected JProgressBar pBar;
 	
 	protected int fontSize = 16;
 	
 	
+	/**
+	 * ArrayList which store the generic Jobs, the effective classes will insert their type of job (SplitPanel -> SplitJobUI)
+	 */
+	ArrayList<Job> jobQueue = new ArrayList<Job>();
+	
 	public AppPanel(int w, int h) {
 		this.setSize(w, h);
+		startBtn.addActionListener(this);
+		fileBtn.addActionListener(this);
 	}
 	
 	public AppPanel(int w, int h, Color c) {
@@ -66,24 +77,19 @@ public abstract class AppPanel extends JPanel{
 		container = new JPanel();
 		container.setLayout(new BoxLayout(container, BoxLayout.PAGE_AXIS));
 		setPadding(container, 60, 60, 0, 0);
-		addElementToContainer();
-		addElementToContainer();
-		addElementToContainer();
 		
 		JScrollPane jobList = new JScrollPane(container);
-		
+
 		//Costruzione Bottom Panel
 		JPanel bottomPnl = new JPanel();
 		bottomPnl.setLayout(new GridBagLayout());
 		GridBagConstraints gbc= new GridBagConstraints();
 		
 		//Costruzione bottone Start
-		startBtn = new JButton("Start");
 		startBtn.setPreferredSize(new Dimension(120, 30));
 		startBtn.setMinimumSize(new Dimension(50, 30));
 
 		//Costruzione bottone File
-		fileBtn = new JButton("File");
 		fileBtn.setPreferredSize(new Dimension(120, 30));
 		fileBtn.setMinimumSize(new Dimension(50, 30));
 
@@ -140,6 +146,55 @@ public abstract class AppPanel extends JPanel{
 		comp.setBorder(new CompoundBorder(border, margin));
 	}
 	
-	protected abstract void addElementToContainer();
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		if(e.getSource() == startBtn) {
+			startBtnAction();
+		}
+		else if(e.getSource() == fileBtn) {
+			fileBtnAction();
+
+		}
+	}
+	
+	protected void addJob(Job job) {
+		jobQueue.add(job);
+	}
+
+	protected void removeJob(Job job) {
+		jobQueue.remove(job);
+	}
+	
+	protected void clearContainer() {
+		Component[] componentList = container.getComponents();
+		
+		for(Component c : componentList){
+			container.remove(c);
+		}
+		revalidate();
+	}
+	
+	/**
+	 * 
+	 * @param index
+	 * @return the instanced Object for the Job
+	 */
+	protected abstract Job getJob(int index) ;
+	
+	/**
+	 * Define the type of UI element to be added 
+	 */
+	protected abstract void addElementToContainer(String fname);
+	
+	/**
+	 * The implementation of the action for the start button is delegated to the child class
+	 */
+	protected abstract void startBtnAction();
+
+	/**
+	 * The implementation of the action for the file button is delegated to the child class
+	 */
+	protected abstract void fileBtnAction();
 	
 }
