@@ -2,6 +2,7 @@ package com.artattack;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 /**
  * Class that handles FileDiv objects with a simple queue (ArrayList)
@@ -11,6 +12,14 @@ import java.util.ArrayList;
 public class DivisionHandler {
 	
 	private ArrayList<FileDiv> queue;
+	
+	private String FileDivReg = "^(\\./)?.*\\.frame\\..*";
+	private String DimDivReg = "^(\\./)?.*\\.dim\\..*";
+	private String PartDivReg = "^(\\./)?.*\\.part\\..*";
+	
+
+	private String ZipReg = ".*(?:\\.frame\\.|\\.dim\\.|\\.part\\.)(crypt\\.)?.*\\.zip$";
+	private String CryptReg = ".*(?:\\.frame\\.|\\.dim\\.|\\.part\\.)crypt\\..*";
 	
 	public DivisionHandler() {
 		this.queue = new ArrayList<FileDiv>();
@@ -22,6 +31,28 @@ public class DivisionHandler {
 	 */
 	public void addFile(FileDiv f) {
 		queue.add(f);
+	}
+	
+	/**
+	 * Add the file to the queue based on the file name pattern
+	 * @param f
+	 */
+	public void addFile(String f) {
+		boolean filediv = Pattern.matches(FileDivReg, f);		
+		boolean dimdiv = Pattern.matches(DimDivReg, f);
+		boolean partdiv = Pattern.matches(PartDivReg, f);
+		
+		boolean zip = Pattern.matches(ZipReg, f);
+		boolean crypt = Pattern.matches(CryptReg, f);
+		
+		if(filediv)
+			queue.add(new FileDiv(f, false, crypt, zip, 4096));
+			
+		else if(dimdiv)
+			queue.add(new DimDiv(f, false, crypt, zip)); 
+			
+		else if(partdiv)
+			queue.add(new PartDiv(f, false, crypt, zip, 4)); 
 	}
 	
 	/**

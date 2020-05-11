@@ -50,17 +50,17 @@ public class App{
 				//System.out.println("Finito : " + numparts + " parti");
 				break;
 			case 2 : 
-				FileDiv merge1 = new FileDiv("./prova0.frame.png", false, false, false, 4096);
+				/*FileDiv merge1 = new FileDiv("./prova0.frame.png", false, false, false, 4096);
 				PartDiv merge2 = new PartDiv("./test0.part.txt", false, false, false, 6);
 				DimDiv merge3 = new DimDiv("./home0.dim.jpg", false, false, false);
-
+				*/
 				try {
 					DivisionHandler dh = new DivisionHandler();
 					
-					dh.addFile(merge1);
-					dh.addFile(merge2);
-					dh.addFile(merge3);
-
+					dh.addFile("./prova0.frame.png");
+					//dh.addFile("./test0.part.txt");
+					//dh.addFile("./home0.dim.jpg");
+					
 					dh.merge();
 					
 					System.out.println("Finito !!");
