@@ -67,8 +67,8 @@ public class DivisionHandler {
 	 * Get the file by giving the index in the queue
 	 * @param index
 	 */
-	public void getFile(int index) {
-		queue.get(index);
+	public FileDiv getFile(int index) {
+		return queue.get(index);
 	}
 	
 	/**
@@ -90,6 +90,22 @@ public class DivisionHandler {
 			queue.get(i).MergeFile();
 		}
 		
+	}
+	
+	public void clear() {
+		queue.clear();
+	}
+	
+	//REFACTOR//
+	public String toString() {
+		String out = "";
+		
+		for(int i = 0; i < queue.size(); i++) {
+			FileDiv element = getFile(i);
+			out += element.getFilename() + "\n";
+		}
+		
+		return out;
 	}
 
 }

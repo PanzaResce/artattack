@@ -1,9 +1,8 @@
 package com.artattack;
 
+import java.awt.Color;
 import java.io.IOException;
-
-import com.artattack.FileDiv;
-
+import GUI.AppFrame;
 
 /**
 *
@@ -29,8 +28,11 @@ public class App{
 		// TODO Auto-generated method stub
 		
 		
-        
+		AppFrame a = new AppFrame("coso", new Color(242,242,242));
 		
+		a.setVisible(true);
+
+		/*
 		int scelta = 2;
 		switch(scelta) {
 			case 1 :
@@ -69,7 +71,7 @@ public class App{
 				}
 				break;
 		}
-		
+		*/
 	}
 
 }

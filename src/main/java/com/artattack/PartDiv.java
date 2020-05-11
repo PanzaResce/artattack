@@ -14,6 +14,9 @@ import java.io.File;
 
 public class PartDiv extends FileDiv{
 	
+	/**
+	 * The number of parts in which the file will be split
+	 */
 	private int numParts = 2;
 	
 	/**
