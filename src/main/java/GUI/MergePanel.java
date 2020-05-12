@@ -52,6 +52,7 @@ public class MergePanel extends AppPanel{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 		mergeQueue.clear();
 		clearContainer();
 

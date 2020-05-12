@@ -50,7 +50,8 @@ public abstract class AppPanel<Job extends JobUI> extends JPanel implements Acti
 	public AppPanel(int w, int h) {
 		this.setSize(w, h);
 		startBtn.addActionListener(this);
-		fileBtn.addActionListener(this);
+		fileBtn.addActionListener(this);	
+		
 	}
 	
 	public AppPanel(int w, int h, Color c) {
@@ -149,30 +150,52 @@ public abstract class AppPanel<Job extends JobUI> extends JPanel implements Acti
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
+		JButton buttonClicked = (JButton)e.getSource();
+		System.out.println(buttonClicked);
 		if(e.getSource() == startBtn) {
 			startBtnAction();
 		}
 		else if(e.getSource() == fileBtn) {
 			fileBtnAction();
 
+		}else{
+			//scorro gli eventi provenienti dagli oggetti Job
+			for(Job j : jobQueue) {
+				if(e.getSource() == j.delBtn) {
+					System.out.println("yeah");
+					//Component c = (Component) e.getSource();
+					//if(c.equals())
+					removeJob(j);
+					break;
+				}
+			}
+			
 		}
 	}
 	
 	protected void addJob(Job job) {
 		jobQueue.add(job);
+		job.delBtn.addActionListener(this);
 	}
 
 	protected void removeJob(Job job) {
+		container.remove(job);
 		jobQueue.remove(job);
+		revalidate();
+		repaint();
 	}
 	
 	protected void clearContainer() {
+		/*
 		Component[] componentList = container.getComponents();
-		
 		for(Component c : componentList){
 			container.remove(c);
 		}
+		*/
+		container.removeAll();
+		
 		revalidate();
+		repaint();
 	}
 	
 	/**
