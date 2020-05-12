@@ -55,7 +55,7 @@ public class App{
 				/*FileDiv merge1 = new FileDiv("./prova0.frame.png", false, false, false, 4096);
 				PartDiv merge2 = new PartDiv("./test0.part.txt", false, false, false, 6);
 				DimDiv merge3 = new DimDiv("./home0.dim.jpg", false, false, false);
-				*/
+				
 				try {
 					DivisionHandler dh = new DivisionHandler();
 					
