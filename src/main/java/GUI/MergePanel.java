@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 import com.artattack.DivisionHandler;
 import com.artattack.FileDiv;
@@ -42,6 +43,23 @@ public class MergePanel extends AppPanel{
 			String fname = getJob(i).getFileName().getText();
 			
 			mergeQueue.addFile(fname);
+			
+			FileDiv lastInserted = mergeQueue.getFile(i);
+			
+			if(lastInserted.isEncrypted()) {
+				String psw = null;
+				do {
+					psw = (String)JOptionPane.showInputDialog(
+		                    container,
+		                    "Inserirsci password per file "+fname,
+		                    "Customized Dialog",
+		                    JOptionPane.PLAIN_MESSAGE
+		                    );
+				}while(psw == null || psw.equals(""));
+				
+				lastInserted.setPsw(psw);	
+			}
+			
 			
 			System.out.println("ADDED");
 		}

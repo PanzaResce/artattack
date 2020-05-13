@@ -137,9 +137,9 @@ public class FileDiv {
 	public long DivideFile() {
 		if(isSplitmode()) {
 			if(isEncrypted()) {
-				System.out.println("Inserisci la psw per cifrare l'archivio");
+				//System.out.println("Inserisci la psw per cifrare l'archivio");
 				
-				setPsw(new String(System.console().readPassword()));
+				//setPsw(new String(System.console().readPassword()));
 				setKey(generateKey());
 			}
 			
@@ -191,6 +191,7 @@ public class FileDiv {
 				//System.out.println("Inserisci la psw per poter leggere l'archivio");
 				
 				//setPsw(new String(System.console().readPassword()));
+				//setPsw("ciaociao");
 				setKey(getKeyFromArchive());
 			}
 			

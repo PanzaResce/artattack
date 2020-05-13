@@ -162,7 +162,7 @@ public abstract class AppPanel<Job extends JobUI> extends JPanel implements Acti
 			//scorro gli eventi provenienti dagli oggetti Job
 			for(Job j : jobQueue) {
 				if(e.getSource() == j.delBtn) {
-					System.out.println("yeah");
+					//System.out.println("yeah");
 					//Component c = (Component) e.getSource();
 					//if(c.equals())
 					removeJob(j);
@@ -193,6 +193,7 @@ public abstract class AppPanel<Job extends JobUI> extends JPanel implements Acti
 		}
 		*/
 		container.removeAll();
+		jobQueue.clear();
 		
 		revalidate();
 		repaint();

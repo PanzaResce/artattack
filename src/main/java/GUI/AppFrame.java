@@ -12,11 +12,11 @@ import javax.swing.border.EmptyBorder;
 
 public class AppFrame extends JFrame{
 	
-	private int width = 1280;
-	private int height = 720;
+	private int width = 1920;
+	private int height = 1080;
 	
-	private int startX = 100;
-	private int startY = 100;
+	private int startX = 50;
+	private int startY = 50;
 	
 	private JPanel jpl;
 	private JPanel jpr;

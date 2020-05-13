@@ -1,36 +1,121 @@
 package GUI;
 
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.ParseException;
+
 import javax.swing.ButtonGroup;
 import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
 import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+import javax.swing.text.MaskFormatter;
 
 public class SplitJobUI extends JobUI{
 
-	private JRadioButton zipBtn;
-	private JRadioButton cryptBtn;
-	private JComboBox<String> jobType;
+	protected JRadioButton zipBtn;
+	protected JRadioButton cryptBtn;
 	
-	private ButtonGroup btnGroup;
+	protected JComboBox<String> jobType;
 	
-	private String jobCategories[] = {"FrameDiv", "PartDiv", "DimDiv"};
+	protected JLabel txtFieldLabel;
+	protected JFormattedTextField numPartField;
+
+	protected JTextField pswField;
+	
+	protected ButtonGroup btnGroup;
+	
+	protected String jobCategories[] = {"FrameDiv", "PartDiv", "DimDiv"};
 	
 	public SplitJobUI(String fname) {
 		super(fname);
 		
 		zipBtn = new JRadioButton("Zip");
 		cryptBtn = new JRadioButton("Crypt");
+		
 		jobType = new JComboBox<String>(jobCategories);
+		
+		//label + textfield per inserimento parti
+		txtFieldLabel = new JLabel("N.Parti");
+		txtFieldLabel.setVisible(false);
+		try {
+			numPartField = new JFormattedTextField(new MaskFormatter("#"));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		numPartField.setVisible(false);
+		numPartField.setPreferredSize(new Dimension(30,20));
+
+		//textfield per inserimento password
+		pswField = new JTextField("inserire psw per archivio");
+		pswField.setVisible(false);
 		
 		btnGroup = new ButtonGroup();
 		btnGroup.add(cryptBtn);
 		btnGroup.add(zipBtn);
 		
+		
 		this.add(zipBtn);
 		this.add(cryptBtn);
 		this.add(jobType);
+		this.add(txtFieldLabel);
+		this.add(numPartField);
+		this.add(pswField);
+		
+		radioButtonListener();
+		comboBoxListener();
 		
 	}
 	
+	/**
+	 * show/hide the numPartFiled if "PartDiv" is selected
+	 */
+	private void comboBoxListener() {
+		// TODO Auto-generated method stub
+		jobType.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(jobType.getSelectedItem().toString() == "PartDiv") {
+					numPartField.setVisible(true); 
+					txtFieldLabel.setVisible(true);
+				} else {
+					numPartField.setVisible(false); 
+					txtFieldLabel.setVisible(false);
+				}
+				revalidate();
+				repaint();
+				
+			}
+		});
+	}
+
+	/**
+	 * SHow/hide pswField if cryptBtn is selected 
+	 */
+	private void radioButtonListener() {
+		zipBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(zipBtn.isSelected()) 
+					pswField.setVisible(false);
+				revalidate();
+				repaint();
+			}
+		});
+		
+		cryptBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(cryptBtn.isSelected()) 
+					pswField.setVisible(true);
+				revalidate();
+				repaint();
+			}
+		});
+	}
+
 	/**
 	 * 
 	 * @return true if {@code zipBtn} is selected
@@ -115,6 +200,34 @@ public class SplitJobUI extends JobUI{
 	 */
 	public void setGroup(ButtonGroup grp) {
 		this.btnGroup = grp;
+	}
+
+	/**
+	 * @return the numPartField
+	 */
+	public JFormattedTextField getNumPartField() {
+		return numPartField;
+	}
+
+	/**
+	 * @param numPartField the numPartField to set
+	 */
+	public void setNumPartField(JFormattedTextField numPartField) {
+		this.numPartField = numPartField;
+	}
+
+	/**
+	 * @return the pswField
+	 */
+	public JTextField getPswField() {
+		return pswField;
+	}
+
+	/**
+	 * @param pswField the pswField to set
+	 */
+	public void setPswField(JTextField pswField) {
+		this.pswField = pswField;
 	}
 	
 	

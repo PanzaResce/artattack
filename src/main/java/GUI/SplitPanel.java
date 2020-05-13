@@ -54,7 +54,7 @@ public class SplitPanel extends AppPanel{
 					
 				case "PartDiv" :
 					//ask for num parts
-					job = new PartDiv(fname, true, 5);
+					job = new PartDiv(fname, true, getJob(i).toCrypt(), getJob(i).toZip(), 5);
 					System.out.println("ADDED");
 					break;
 					
@@ -62,6 +62,10 @@ public class SplitPanel extends AppPanel{
 					//ask for dimension of each part
 					
 					break;
+			}
+			
+			if(getJob(i).toCrypt()) {
+				job.setPsw(getJob(i).getPswField().getText());
 			}
 			
 			splitQueue.addFile(job);

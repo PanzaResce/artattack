@@ -5,6 +5,7 @@ import java.awt.FlowLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 /**
  * Define the UI of a single Job
@@ -15,7 +16,6 @@ public class JobUI extends JPanel{
 	
 	protected JButton delBtn = new JButton("x");
 	protected JLabel fileName;
-	
 	/**
 	 * Padding between each element of the job
 	 */
@@ -29,6 +29,7 @@ public class JobUI extends JPanel{
 		
 		fileName = new JLabel(fname);
 		this.add(fileName);
+		
 		
 	}
 
@@ -44,6 +45,20 @@ public class JobUI extends JPanel{
 	 */
 	public void setFileName(JLabel fileName) {
 		this.fileName = fileName;
+	}
+
+	/**
+	 * @return the delBtn
+	 */
+	public JButton getDelBtn() {
+		return delBtn;
+	}
+
+	/**
+	 * @param delBtn the delBtn to set
+	 */
+	public void setDelBtn(JButton delBtn) {
+		this.delBtn = delBtn;
 	}
 	
 	
