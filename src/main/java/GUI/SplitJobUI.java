@@ -5,12 +5,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
 
-import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
-import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.text.MaskFormatter;
 
@@ -26,7 +24,6 @@ public class SplitJobUI extends JobUI{
 
 	protected JTextField pswField;
 	
-	protected ButtonGroup btnGroup;
 	
 	protected String jobCategories[] = {"FrameDiv", "PartDiv", "DimDiv"};
 	
@@ -54,12 +51,6 @@ public class SplitJobUI extends JobUI{
 		pswField.setPreferredSize(new Dimension(140, 20));
 		pswField.setVisible(false);
 		
-		/*
-		btnGroup = new ButtonGroup();
-		btnGroup.add(cryptBtn);
-		btnGroup.add(zipBtn);
-		*/
-		
 		
 		this.add(zipBtn);
 		this.add(cryptBtn);
@@ -77,7 +68,6 @@ public class SplitJobUI extends JobUI{
 	 * show/hide the numPartFiled if "PartDiv" is selected
 	 */
 	private void comboBoxListener() {
-		// TODO Auto-generated method stub
 		jobType.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -196,20 +186,6 @@ public class SplitJobUI extends JobUI{
 	 */
 	public void setJobCategories(String[] jobCategories) {
 		this.jobCategories = jobCategories;
-	}
-
-	/**
-	 * @return the grp
-	 */
-	public ButtonGroup getGroup() {
-		return btnGroup;
-	}
-
-	/**
-	 * @param grp the grp to set
-	 */
-	public void setGroup(ButtonGroup grp) {
-		this.btnGroup = grp;
 	}
 
 	/**
