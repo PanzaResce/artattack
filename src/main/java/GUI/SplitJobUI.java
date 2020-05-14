@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.text.ParseException;
 
 import javax.swing.ButtonGroup;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
@@ -15,8 +16,8 @@ import javax.swing.text.MaskFormatter;
 
 public class SplitJobUI extends JobUI{
 
-	protected JRadioButton zipBtn;
-	protected JRadioButton cryptBtn;
+	protected JCheckBox zipBtn;
+	protected JCheckBox cryptBtn;
 	
 	protected JComboBox<String> jobType;
 	
@@ -32,8 +33,8 @@ public class SplitJobUI extends JobUI{
 	public SplitJobUI(String fname) {
 		super(fname);
 		
-		zipBtn = new JRadioButton("Zip");
-		cryptBtn = new JRadioButton("Crypt");
+		zipBtn = new JCheckBox("Zip");
+		cryptBtn = new JCheckBox("Crypt");
 		
 		jobType = new JComboBox<String>(jobCategories);
 		
@@ -50,11 +51,14 @@ public class SplitJobUI extends JobUI{
 
 		//textfield per inserimento password
 		pswField = new JTextField("inserire psw per archivio");
+		pswField.setPreferredSize(new Dimension(140, 20));
 		pswField.setVisible(false);
 		
+		/*
 		btnGroup = new ButtonGroup();
 		btnGroup.add(cryptBtn);
 		btnGroup.add(zipBtn);
+		*/
 		
 		
 		this.add(zipBtn);
@@ -64,7 +68,7 @@ public class SplitJobUI extends JobUI{
 		this.add(numPartField);
 		this.add(pswField);
 		
-		radioButtonListener();
+		checkBoxListener();
 		comboBoxListener();
 		
 	}
@@ -94,12 +98,14 @@ public class SplitJobUI extends JobUI{
 	/**
 	 * SHow/hide pswField if cryptBtn is selected 
 	 */
-	private void radioButtonListener() {
+	private void checkBoxListener() {
 		zipBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(zipBtn.isSelected()) 
+				if(zipBtn.isSelected()) {
 					pswField.setVisible(false);
+					cryptBtn.setSelected(false);
+				}
 				revalidate();
 				repaint();
 			}
@@ -108,8 +114,12 @@ public class SplitJobUI extends JobUI{
 		cryptBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(cryptBtn.isSelected()) 
+				if(cryptBtn.isSelected()) {
 					pswField.setVisible(true);
+				 	zipBtn.setSelected(false);
+				} else {
+					pswField.setVisible(false);
+				}
 				revalidate();
 				repaint();
 			}
@@ -135,28 +145,28 @@ public class SplitJobUI extends JobUI{
 	/**
 	 * @return the zipBtn
 	 */
-	public JRadioButton getZipBtn() {
+	public JCheckBox getZipBtn() {
 		return zipBtn;
 	}
 
 	/**
 	 * @param zipBtn the zipBtn to set
 	 */
-	public void setZipBtn(JRadioButton zipBtn) {
+	public void setZipBtn(JCheckBox zipBtn) {
 		this.zipBtn = zipBtn;
 	}
 
 	/**
 	 * @return the cryptBtn
 	 */
-	public JRadioButton getCryptBtn() {
+	public JCheckBox getCryptBtn() {
 		return cryptBtn;
 	}
 
 	/**
 	 * @param cryptBtn the cryptBtn to set
 	 */
-	public void setCryptBtn(JRadioButton cryptBtn) {
+	public void setCryptBtn(JCheckBox cryptBtn) {
 		this.cryptBtn = cryptBtn;
 	}
 
