@@ -29,6 +29,9 @@ public class AppFrame extends JFrame{
 		setJpl(getWidth()/2, getHeight(), c);
         setJpr(getWidth()/2, getHeight(), c);
         setSplitPane();
+        
+        setExtendedState(JFrame.MAXIMIZED_BOTH); 
+        setVisible(true);
 		
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
