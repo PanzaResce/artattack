@@ -1,10 +1,14 @@
 package GUI;
 
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
+import java.util.ArrayList;
 
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
@@ -21,14 +25,21 @@ public class SplitJobUI extends JobUI{
 	
 	protected JLabel txtFieldLabel;
 	protected JFormattedTextField numPartField;
-
-	protected JTextField pswField;
 	
+	protected ImageIcon settingsIcon = new ImageIcon("src/main/resources/settings.png");
+	protected JButton dimdivButton;
+	
+	protected JTextField pswField;
 	
 	protected String jobCategories[] = {"FrameDiv", "PartDiv", "DimDiv"};
 	
-	public SplitJobUI(String fname) {
-		super(fname);
+	/**
+	 * ArrayList buffer for the DimDiv class
+	 */
+	protected ArrayList<Long> division = new ArrayList<Long>();
+
+	public SplitJobUI(String fname, int index) {
+		super(fname, index);
 		
 		zipBtn = new JCheckBox("Zip");
 		cryptBtn = new JCheckBox("Crypt");
@@ -45,6 +56,14 @@ public class SplitJobUI extends JobUI{
 		}
 		numPartField.setVisible(false);
 		numPartField.setPreferredSize(new Dimension(30,20));
+		
+		Image buff = settingsIcon.getImage();
+		buff = buff.getScaledInstance(20, 20,  java.awt.Image.SCALE_SMOOTH);
+		settingsIcon = new ImageIcon(buff);
+		//dimdivIcon.setPreferredSize(new Dimension(20,20));
+		dimdivButton = new JButton(settingsIcon);
+		dimdivButton.setPreferredSize(new Dimension(40,30));
+		dimdivButton.setVisible(false);
 
 		//textfield per inserimento password
 		pswField = new JTextField("inserire psw per archivio");
@@ -57,15 +76,18 @@ public class SplitJobUI extends JobUI{
 		this.add(jobType);
 		this.add(txtFieldLabel);
 		this.add(numPartField);
+		this.add(dimdivButton);
 		this.add(pswField);
 		
 		checkBoxListener();
 		comboBoxListener();
+		settingsButtonListener();
 		
 	}
 	
 	/**
 	 * show/hide the numPartFiled if "PartDiv" is selected
+	 * show/hide the settings icon if "DimDiv" is selected
 	 */
 	private void comboBoxListener() {
 		jobType.addActionListener(new ActionListener() {
@@ -78,6 +100,12 @@ public class SplitJobUI extends JobUI{
 					numPartField.setVisible(false); 
 					txtFieldLabel.setVisible(false);
 				}
+				
+				if(jobType.getSelectedItem().toString() == "DimDiv") {
+					dimdivButton.setVisible(true);
+				}else
+					dimdivButton.setVisible(false);
+				
 				revalidate();
 				repaint();
 				
@@ -86,7 +114,7 @@ public class SplitJobUI extends JobUI{
 	}
 
 	/**
-	 * SHow/hide pswField if cryptBtn is selected 
+	 * Show/hide pswField if cryptBtn is selected 
 	 */
 	private void checkBoxListener() {
 		zipBtn.addActionListener(new ActionListener() {
@@ -113,6 +141,17 @@ public class SplitJobUI extends JobUI{
 				revalidate();
 				repaint();
 			}
+		});
+	}
+	
+	private void settingsButtonListener() {
+		dimdivButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
 		});
 	}
 
@@ -214,6 +253,20 @@ public class SplitJobUI extends JobUI{
 	 */
 	public void setPswField(JTextField pswField) {
 		this.pswField = pswField;
+	}
+
+	/**
+	 * @return the division
+	 */
+	public ArrayList<Long> getDivision() {
+		return division;
+	}
+
+	/**
+	 * @param division the division to set
+	 */
+	public void setDivision(ArrayList<Long> division) {
+		this.division = division;
 	}
 	
 	

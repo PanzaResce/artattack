@@ -1,5 +1,6 @@
 package GUI;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 
 import javax.swing.JComponent;
@@ -41,10 +42,10 @@ public class AppFrame extends JFrame{
 		JSplitPane splitPane = new JSplitPane();
         splitPane.setSize(getWidth(), getHeight());
         splitPane.setDividerSize(5);
-        splitPane.setDividerLocation(getWidth()/2);
         splitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
         splitPane.setLeftComponent(getJpl());
         splitPane.setRightComponent(getJpr());
+        splitPane.setResizeWeight(0.5f);
         splitPane.setBackground(new Color(255, 255, 255));
         setPadding(splitPane, 0);
         

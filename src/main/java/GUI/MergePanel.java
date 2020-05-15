@@ -13,9 +13,7 @@ import com.artattack.FileDiv;
 import com.artattack.PartDiv;
 
 public class MergePanel extends AppPanel{
-	
-	DivisionHandler mergeQueue = new DivisionHandler();
-	
+		
 	public MergePanel(int w, int h) {
 		super(w, h);
 	}
@@ -23,15 +21,6 @@ public class MergePanel extends AppPanel{
 		super(w, h, c);
 	}
 	
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	protected void addElementToContainer(String fname) {
-		JobUI job = new JobUI(fname);
-		container.add(job);
-		addJob(job);
-		revalidate();
-	}
 	
 	@Override
 	protected void startBtnAction() {
@@ -42,16 +31,16 @@ public class MergePanel extends AppPanel{
 			*/
 			String fname = getJob(i).getFileName().getText();
 			
-			mergeQueue.addFile(fname);
+			mainQueue.addFile(fname, false);
 			
-			FileDiv lastInserted = mergeQueue.getFile(i);
+			FileDiv lastInserted = mainQueue.getFile(i);
 			
 			if(lastInserted.isEncrypted()) {
 				String psw = null;
 				do {
 					psw = (String)JOptionPane.showInputDialog(
 		                    container,
-		                    "Inserirsci password per file "+fname,
+		                    "Inserirsci password per file " + fname,
 		                    "Customized Dialog",
 		                    JOptionPane.PLAIN_MESSAGE
 		                    );
@@ -65,13 +54,13 @@ public class MergePanel extends AppPanel{
 		}
 		
 		try {
-			mergeQueue.merge();
+			mainQueue.merge();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		mergeQueue.clear();
+		mainQueue.clear();
 		clearContainer();
 
 	}
@@ -83,7 +72,7 @@ public class MergePanel extends AppPanel{
 		
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fc.getSelectedFile();
-        	addElementToContainer(file.getAbsolutePath());
+        	addElementToContainer(new JobUI(file.getAbsolutePath(), this.mainQueue.getLength()));
         }
 
 	}

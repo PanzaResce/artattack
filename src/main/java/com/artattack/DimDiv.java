@@ -23,16 +23,18 @@ public class DimDiv extends FileDiv{
 	 */
 	public DimDiv(String fname, boolean mode) {
 		super(fname, mode);
+		defaultDivision();
 		setEXT(".dim");
 	}
 	
 	
 	public DimDiv(String fname, boolean mode, boolean crypt, boolean zip) {
 		super(fname, mode, crypt, zip);
+		defaultDivision();
 		setEXT(".dim");
 	}
-	
-	
+
+
 	/**
 	 * Ask the user the dimension of each file part, the dimension is asked in Kb
 	 * <br>
@@ -76,7 +78,7 @@ public class DimDiv extends FileDiv{
 			try {	
 				//set to default split method if empty
 				if(division.isEmpty())
-					setDivision();
+					defaultDivision();
 				RandomAccessFile raf = new RandomAccessFile(getFilename(), "r");
 				
 				for(int i = 0; i < division.size(); i++) {
@@ -99,12 +101,27 @@ public class DimDiv extends FileDiv{
 	/**
 	 * Function for default division method, split the file in two equal parts
 	 */
-	private void setDivision() {
+	private void defaultDivision() {
 		File f = new File(getFilename());
 		long flength = f.length();
 		
 		division.add(flength / 2);
 		division.add(flength - (flength / 2));
+	}
+	
+	/**
+	 * @return the division
+	 */
+	public ArrayList<Long> getDivision() {
+		return division;
+	}
+
+
+	/**
+	 * @param division the division to set
+	 */
+	public void setDivision(ArrayList<Long> division) {
+		this.division = division;
 	}
 	
 	private static String humanReadableByteCountBin(long bytes) {

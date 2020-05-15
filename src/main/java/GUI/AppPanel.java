@@ -30,6 +30,8 @@ import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 
+import com.artattack.DivisionHandler;
+
 public abstract class AppPanel<Job extends JobUI> extends JPanel implements ActionListener{
 	
 	
@@ -46,6 +48,12 @@ public abstract class AppPanel<Job extends JobUI> extends JPanel implements Acti
 	 * ArrayList which store the generic Jobs, the effective classes will insert their type of job (SplitPanel -> SplitJobUI)
 	 */
 	ArrayList<Job> jobQueue = new ArrayList<Job>();
+
+	/**
+	 * Object which implement the queue for the job that will be split/divided
+	 */
+	DivisionHandler mainQueue = new DivisionHandler();
+
 	
 	public AppPanel(int w, int h) {
 		this.setSize(w, h);
@@ -200,16 +208,23 @@ public abstract class AppPanel<Job extends JobUI> extends JPanel implements Acti
 	}
 	
 	/**
+	 * Define the type of UI element to be added, the subclass needs to pass down the type of Job (JobUI, SplitJobUI, ...)
+	 * This also add the element to the mainQueue
+	 */
+	protected void addElementToContainer(Job job) {
+		container.add(job);
+		addJob(job);
+		
+		revalidate();
+		repaint();
+	}	
+	
+	/**
 	 * 
 	 * @param index
 	 * @return the instanced Object for the Job
 	 */
 	protected abstract Job getJob(int index) ;
-	
-	/**
-	 * Define the type of UI element to be added 
-	 */
-	protected abstract void addElementToContainer(String fname);
 	
 	/**
 	 * The implementation of the action for the start button is delegated to the child class

@@ -11,8 +11,6 @@ import com.artattack.FileDiv;
 import com.artattack.PartDiv;
 
 public class SplitPanel extends AppPanel{
-	
-	DivisionHandler splitQueue = new DivisionHandler();
 
 	public SplitPanel(int w, int h) {
 		super(w, h);
@@ -24,14 +22,6 @@ public class SplitPanel extends AppPanel{
 		jobQueue = new ArrayList<SplitJobUI>();
 	}
 	
-	@SuppressWarnings("unchecked")
-	@Override
-	protected void addElementToContainer(String fname) {
-		SplitJobUI job = new SplitJobUI(fname);
-		container.add(job);
-		addJob(job);
-		revalidate();
-	}
 
 	@Override
 	protected void startBtnAction() {
@@ -68,14 +58,14 @@ public class SplitPanel extends AppPanel{
 				job.setPsw(getJob(i).getPswField().getText());
 			}
 			
-			splitQueue.addFile(job);
+			mainQueue.addFile(job);
 			
 			
 		}
 		
-		splitQueue.split();
+		mainQueue.split();
 		
-		splitQueue.clear();
+		mainQueue.clear();
 		clearContainer();
 		
 		//System.out.println(splitQueue.toString());
@@ -89,7 +79,7 @@ public class SplitPanel extends AppPanel{
 		
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fc.getSelectedFile();
-        	addElementToContainer(file.getAbsolutePath());
+        	addElementToContainer(new SplitJobUI(file.getAbsolutePath(), this.mainQueue.getLength()));
         }
 	}
 
