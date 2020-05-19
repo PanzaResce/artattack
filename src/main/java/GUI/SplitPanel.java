@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import javax.swing.JFileChooser;
 
+import com.artattack.DimDiv;
 import com.artattack.DivisionHandler;
 import com.artattack.FileDiv;
 import com.artattack.PartDiv;
@@ -50,7 +51,7 @@ public class SplitPanel extends AppPanel{
 					
 				case "DimDiv" :
 					//ask for dimension of each part
-					
+					job = new DimDiv(fname, true, getJob(i).toCrypt(), getJob(i).toZip(), getJob(i).getDivision());
 					break;
 			}
 			

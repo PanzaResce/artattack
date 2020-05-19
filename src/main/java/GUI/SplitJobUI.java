@@ -1,9 +1,11 @@
 package GUI;
 
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.text.ParseException;
 import java.util.ArrayList;
 
@@ -13,6 +15,8 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.text.MaskFormatter;
 
@@ -81,7 +85,7 @@ public class SplitJobUI extends JobUI{
 		
 		checkBoxListener();
 		comboBoxListener();
-		settingsButtonListener();
+		settingsButtonListener(this.getParent());
 		
 	}
 	
@@ -144,12 +148,38 @@ public class SplitJobUI extends JobUI{
 		});
 	}
 	
-	private void settingsButtonListener() {
+	
+	private void settingsButtonListener(final Container container) {
+		
+
 		dimdivButton.addActionListener(new ActionListener() {
+			File f = new File(getFileName().getText());
+			long remains = f.length();				
+			long part = 0;
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
 				
+				do {
+					String s = (String)JOptionPane.showInputDialog(
+		                    container,
+		                    "Specificare grandezza parte in Kb ("+humanReadableByteCountBin(remains)+"Kb rimanenti) \n "
+		                    		+ "Immettere 0 per impostare l'ultima parte con l'ammontare rimanente",
+		                    "Divisione",
+		                    JOptionPane.PLAIN_MESSAGE
+		                    );
+					
+					part = Long.parseLong(s) * 1024;
+					
+					if (part > remains || part == 0)
+						part = remains;
+					
+					
+					remains -= part;
+
+					division.add(part);
+					
+				}while(part != 0 && remains > 0);
 			}
 			
 		});
@@ -269,6 +299,15 @@ public class SplitJobUI extends JobUI{
 		this.division = division;
 	}
 	
-	
+	private static String humanReadableByteCountBin(long bytes) {
+	    long b = bytes == Long.MIN_VALUE ? Long.MAX_VALUE : Math.abs(bytes);
+	    return b < 1024L ? bytes + " B"
+	            : b <= 0xfffccccccccccccL >> 40 ? String.format("%.1f KiB", bytes / 0x1p10)
+	            : b <= 0xfffccccccccccccL >> 30 ? String.format("%.1f MiB", bytes / 0x1p20)
+	            : b <= 0xfffccccccccccccL >> 20 ? String.format("%.1f GiB", bytes / 0x1p30)
+	            : b <= 0xfffccccccccccccL >> 10 ? String.format("%.1f TiB", bytes / 0x1p40)
+	            : b <= 0xfffccccccccccccL ? String.format("%.1f PiB", (bytes >> 10) / 0x1p40)
+	            : String.format("%.1f EiB", (bytes >> 20) / 0x1p40);
+	}
 	
 }

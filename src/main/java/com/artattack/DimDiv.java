@@ -33,6 +33,12 @@ public class DimDiv extends FileDiv{
 		defaultDivision();
 		setEXT(".dim");
 	}
+	
+	public DimDiv(String fname, boolean mode, boolean crypt, boolean zip, ArrayList<Long> division) {
+		super(fname, mode, crypt, zip);
+		setDivision(division);
+		setEXT(".dim");
+	}
 
 
 	/**
