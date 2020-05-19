@@ -57,29 +57,6 @@ public class DimDiv extends FileDiv{
 				setKey(generateKey());
 			}
 			
-			/*
-			File f = new File(getFilename());
-			long flength = f.length();
-			ArrayList<Long> division = new ArrayList<Long>();
-			long remains = flength;
-			long part = 0;
-			
-			System.out.println("Grandezza File: " + humanReadableByteCountBin(flength));
-			
-			do {
-				System.out.println("Specificare grandezza parte in Kb ("+ humanReadableByteCountBin(remains) + " rimanenti)");
-				
-				part = Long.parseLong(System.console().readLine()) * 1024;
-				
-				if (part > remains)
-					part = remains;
-				
-				remains -= part;
-				
-				division.add(part);
-				
-			}while(remains > 0);
-			*/
 			//REFACTOR//
 			try {	
 				//set to default split method if empty

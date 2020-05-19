@@ -72,7 +72,7 @@ public class DivisionHandler {
 	}
 	
 	/**
-	 * Call the {@link FileDiv#FileDiv FileDiv} method for each object in the queue
+	 * Call the {@link FileDiv#FileDiv DivideFile} method for each object in the queue
 	 */
 	public void split() {
 		for(int i=0; i < queue.size(); i++) {
