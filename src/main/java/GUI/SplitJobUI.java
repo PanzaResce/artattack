@@ -1,14 +1,22 @@
 package GUI;
 
+import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.text.ParseException;
+import java.util.ArrayList;
 
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.text.MaskFormatter;
 
@@ -21,14 +29,21 @@ public class SplitJobUI extends JobUI{
 	
 	protected JLabel txtFieldLabel;
 	protected JFormattedTextField numPartField;
-
-	protected JTextField pswField;
 	
+	protected ImageIcon settingsIcon = new ImageIcon("src/main/resources/settings.png");
+	protected JButton dimdivButton;
+	
+	protected JTextField pswField;
 	
 	protected String jobCategories[] = {"FrameDiv", "PartDiv", "DimDiv"};
 	
-	public SplitJobUI(String fname) {
-		super(fname);
+	/**
+	 * ArrayList buffer for the DimDiv class
+	 */
+	protected ArrayList<Long> division = new ArrayList<Long>();
+
+	public SplitJobUI(String fname, int index) {
+		super(fname, index);
 		
 		zipBtn = new JCheckBox("Zip");
 		cryptBtn = new JCheckBox("Crypt");
@@ -45,6 +60,14 @@ public class SplitJobUI extends JobUI{
 		}
 		numPartField.setVisible(false);
 		numPartField.setPreferredSize(new Dimension(30,20));
+		
+		Image buff = settingsIcon.getImage();
+		buff = buff.getScaledInstance(20, 20,  java.awt.Image.SCALE_SMOOTH);
+		settingsIcon = new ImageIcon(buff);
+		//dimdivIcon.setPreferredSize(new Dimension(20,20));
+		dimdivButton = new JButton(settingsIcon);
+		dimdivButton.setPreferredSize(new Dimension(40,30));
+		dimdivButton.setVisible(false);
 
 		//textfield per inserimento password
 		pswField = new JTextField("inserire psw per archivio");
@@ -57,15 +80,18 @@ public class SplitJobUI extends JobUI{
 		this.add(jobType);
 		this.add(txtFieldLabel);
 		this.add(numPartField);
+		this.add(dimdivButton);
 		this.add(pswField);
 		
 		checkBoxListener();
 		comboBoxListener();
+		settingsButtonListener(this.getParent());
 		
 	}
 	
 	/**
 	 * show/hide the numPartFiled if "PartDiv" is selected
+	 * show/hide the settings icon if "DimDiv" is selected
 	 */
 	private void comboBoxListener() {
 		jobType.addActionListener(new ActionListener() {
@@ -78,6 +104,12 @@ public class SplitJobUI extends JobUI{
 					numPartField.setVisible(false); 
 					txtFieldLabel.setVisible(false);
 				}
+				
+				if(jobType.getSelectedItem().toString() == "DimDiv") {
+					dimdivButton.setVisible(true);
+				}else
+					dimdivButton.setVisible(false);
+				
 				revalidate();
 				repaint();
 				
@@ -86,7 +118,7 @@ public class SplitJobUI extends JobUI{
 	}
 
 	/**
-	 * SHow/hide pswField if cryptBtn is selected 
+	 * Show/hide pswField if cryptBtn is selected 
 	 */
 	private void checkBoxListener() {
 		zipBtn.addActionListener(new ActionListener() {
@@ -113,6 +145,43 @@ public class SplitJobUI extends JobUI{
 				revalidate();
 				repaint();
 			}
+		});
+	}
+	
+	
+	private void settingsButtonListener(final Container container) {
+		
+
+		dimdivButton.addActionListener(new ActionListener() {
+			File f = new File(getFileName().getText());
+			long remains = f.length();				
+			long part = 0;
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				do {
+					String s = (String)JOptionPane.showInputDialog(
+		                    container,
+		                    "Specificare grandezza parte in Kb ("+humanReadableByteCountBin(remains)+"Kb rimanenti) \n "
+		                    		+ "Immettere 0 per impostare l'ultima parte con l'ammontare rimanente",
+		                    "Divisione",
+		                    JOptionPane.PLAIN_MESSAGE
+		                    );
+					
+					part = Long.parseLong(s) * 1024;
+					
+					if (part > remains || part == 0)
+						part = remains;
+					
+					
+					remains -= part;
+
+					division.add(part);
+					
+				}while(part != 0 && remains > 0);
+			}
+			
 		});
 	}
 
@@ -215,7 +284,30 @@ public class SplitJobUI extends JobUI{
 	public void setPswField(JTextField pswField) {
 		this.pswField = pswField;
 	}
+
+	/**
+	 * @return the division
+	 */
+	public ArrayList<Long> getDivision() {
+		return division;
+	}
+
+	/**
+	 * @param division the division to set
+	 */
+	public void setDivision(ArrayList<Long> division) {
+		this.division = division;
+	}
 	
-	
+	private static String humanReadableByteCountBin(long bytes) {
+	    long b = bytes == Long.MIN_VALUE ? Long.MAX_VALUE : Math.abs(bytes);
+	    return b < 1024L ? bytes + " B"
+	            : b <= 0xfffccccccccccccL >> 40 ? String.format("%.1f KiB", bytes / 0x1p10)
+	            : b <= 0xfffccccccccccccL >> 30 ? String.format("%.1f MiB", bytes / 0x1p20)
+	            : b <= 0xfffccccccccccccL >> 20 ? String.format("%.1f GiB", bytes / 0x1p30)
+	            : b <= 0xfffccccccccccccL >> 10 ? String.format("%.1f TiB", bytes / 0x1p40)
+	            : b <= 0xfffccccccccccccL ? String.format("%.1f PiB", (bytes >> 10) / 0x1p40)
+	            : String.format("%.1f EiB", (bytes >> 20) / 0x1p40);
+	}
 	
 }

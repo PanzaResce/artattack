@@ -37,7 +37,7 @@ public class DivisionHandler {
 	 * Add the file to the queue based on the file name pattern
 	 * @param f
 	 */
-	public void addFile(String f) {
+	public void addFile(String f, boolean splitmode) {
 		boolean filediv = Pattern.matches(FileDivReg, f);		
 		boolean dimdiv = Pattern.matches(DimDivReg, f);
 		boolean partdiv = Pattern.matches(PartDivReg, f);
@@ -46,13 +46,13 @@ public class DivisionHandler {
 		boolean crypt = Pattern.matches(CryptReg, f);
 		
 		if(filediv)
-			queue.add(new FileDiv(f, false, crypt, zip, 4096));
+			queue.add(new FileDiv(f, splitmode, crypt, zip, 4096));
 			
 		else if(dimdiv)
-			queue.add(new DimDiv(f, false, crypt, zip)); 
+			queue.add(new DimDiv(f, splitmode, crypt, zip)); 
 			
 		else if(partdiv)
-			queue.add(new PartDiv(f, false, crypt, zip, 4)); 
+			queue.add(new PartDiv(f, splitmode, crypt, zip, 4)); 
 	}
 	
 	/**
@@ -72,7 +72,7 @@ public class DivisionHandler {
 	}
 	
 	/**
-	 * Call the {@link FileDiv#FileDiv FileDiv} method for each object in the queue
+	 * Call the {@link FileDiv#FileDiv DivideFile} method for each object in the queue
 	 */
 	public void split() {
 		for(int i=0; i < queue.size(); i++) {
@@ -94,6 +94,10 @@ public class DivisionHandler {
 	
 	public void clear() {
 		queue.clear();
+	}
+	
+	public int getLength() {
+		return queue.size();
 	}
 	
 	//REFACTOR//

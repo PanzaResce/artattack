@@ -21,7 +21,7 @@ public class PartDiv extends FileDiv{
 	
 	/**
 	 * The buffer size needs to be specified for the split function, it is not needed 
-	 * for the for the merge function
+	 * for the merge function
 	 * 
 	 * @param fname
 	 * @param numparts The number of parts in which the file will be divided
