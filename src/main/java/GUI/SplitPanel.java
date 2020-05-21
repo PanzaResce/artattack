@@ -25,7 +25,7 @@ public class SplitPanel extends AppPanel{
 	
 
 	@Override
-	protected void startBtnAction() {
+	protected synchronized void startBtnAction() {
 		for(int i = 0; i < jobQueue.size(); i++) {
 			/*System.out.print(getJob(i).getJobType().getSelectedItem());
 			System.out.print(getJob(i).toZip());
@@ -45,7 +45,7 @@ public class SplitPanel extends AppPanel{
 					
 				case "PartDiv" :
 					//ask for num parts
-					job = new PartDiv(fname, true, getJob(i).toCrypt(), getJob(i).toZip(), 5);
+					job = new PartDiv(fname, true, getJob(i).toCrypt(), getJob(i).toZip(), getJob(i).getNumPartField());
 					System.out.println("ADDED");
 					break;
 					
@@ -59,16 +59,16 @@ public class SplitPanel extends AppPanel{
 				job.setPsw(getJob(i).getPswField().getText());
 			}
 			
+			
 			mainQueue.addFile(job);
 			
-			
 		}
+	
 		
-		mainQueue.split();
-		
+		mainQueue.execute();
+
 		mainQueue.clear();
 		clearContainer();
-		
 		//System.out.println(splitQueue.toString());
 	}
 

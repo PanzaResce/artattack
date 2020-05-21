@@ -37,7 +37,7 @@ import java.util.zip.*;
  * @author marco
  *
  */
-public class FileDiv {
+public class FileDiv implements Runnable{
 	protected boolean encrypted;
 	protected boolean zipped;
 	/**
@@ -124,6 +124,24 @@ public class FileDiv {
 		setEncrypted(crypt);
 		setZipped(zip);
 		setBufferSize(buffersize);
+	}
+	
+	
+	/**
+	 *	 
+	 */
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		if(splitmode)
+			DivideFile();
+		else
+			try {
+				MergeFile();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
 	
 	/**

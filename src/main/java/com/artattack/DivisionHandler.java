@@ -1,5 +1,6 @@
 package com.artattack;
 
+import java.awt.List;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
@@ -13,6 +14,8 @@ public class DivisionHandler {
 	
 	private ArrayList<FileDiv> queue;
 	
+	private boolean completed = false;
+
 	private String FileDivReg = "^(\\./)?.*\\.frame\\..*";
 	private String DimDivReg = "^(\\./)?.*\\.dim\\..*";
 	private String PartDivReg = "^(\\./)?.*\\.part\\..*";
@@ -72,27 +75,31 @@ public class DivisionHandler {
 	}
 	
 	/**
-	 * Call the {@link FileDiv#FileDiv DivideFile} method for each object in the queue
+	 * Call the {@link FileDiv#run Run} method for each object in the queue
 	 */
-	public void split() {
+	public synchronized void execute() {
+		ArrayList threads = new ArrayList();
+
 		for(int i=0; i < queue.size(); i++) {
 			FileDiv e = queue.get(i);
-			long parts = e.DivideFile();
-			System.out.println("FINITO: " + e.getFilename() + " diviso in " + parts + " parti");
+			Thread t = new Thread(e);
+			t.start();
+			threads.add(t);
+			//long parts = e.DivideFile();
+			//System.out.println("FINITO: " + e.getFilename() + " diviso in " + parts + " parti");
 		}
-	}
-	/**
-	 * Call the {@link FileDiv#MergeFile MergeFile} method for each object in the queue
-	 * @throws IOException
-	 */
-	public void merge() throws IOException{
-		for(int i=0; i < queue.size(); i++) {
-			queue.get(i).MergeFile();
-		}
+		
+		for (int i=0; i < threads.size(); i++)
+			try {
+				((Thread) threads.get(i)).join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		
 	}
 	
-	public void clear() {
+	public synchronized void clear() {
 		queue.clear();
 	}
 	
@@ -111,5 +118,19 @@ public class DivisionHandler {
 		
 		return out;
 	}
+	
+	/**
+	 * @return the completed
+	 */
+	public boolean isCompleted() {
+		return completed;
+	}
 
+	/**
+	 * @param completed the completed to set
+	 */
+	public void setCompleted(boolean completed) {
+		this.completed = completed;
+	}
+	
 }

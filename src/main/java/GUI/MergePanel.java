@@ -53,15 +53,11 @@ public class MergePanel extends AppPanel{
 			System.out.println("ADDED");
 		}
 		
-		try {
-			mainQueue.merge();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		mainQueue.execute();
 		
 		mainQueue.clear();
 		clearContainer();
+
 
 	}
 	

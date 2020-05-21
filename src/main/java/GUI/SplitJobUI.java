@@ -260,8 +260,8 @@ public class SplitJobUI extends JobUI{
 	/**
 	 * @return the numPartField
 	 */
-	public JFormattedTextField getNumPartField() {
-		return numPartField;
+	public int getNumPartField() {
+		return Integer.parseInt(numPartField.getText());
 	}
 
 	/**

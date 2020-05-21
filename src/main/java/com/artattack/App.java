@@ -27,11 +27,10 @@ public class App{
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
-		
 		AppFrame a = new AppFrame("coso", new Color(242,242,242));
 		
 		a.setVisible(true);
-
+		
 		/*
 		int scelta = 2;
 		switch(scelta) {

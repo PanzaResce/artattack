@@ -193,7 +193,7 @@ public abstract class AppPanel<Job extends JobUI> extends JPanel implements Acti
 		repaint();
 	}
 	
-	protected void clearContainer() {
+	protected synchronized void clearContainer() {
 		/*
 		Component[] componentList = container.getComponents();
 		for(Component c : componentList){
