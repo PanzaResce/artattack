@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 /**
- * Class that handles FileDiv objects with a simple queue (ArrayList)
+ * La classe che gestisce i tipi di classe FileDiv con una coda (ArrayList)
+ * 
+ * Questa classe non distingue tra divisione e unione, poichè chiamando il metodo {@link FileDiv#run run} viene scelta in automatico
+ * l'operazione corretta
+ * 
  * @author marco
  *
  */
@@ -31,7 +35,7 @@ public class DivisionHandler{
 	}
 	
 	/**
-	 * Add the file to the queue
+	 * Aggiunge il file alla coda
 	 * @param f
 	 */
 	public void addFile(FileDiv f) {
@@ -39,7 +43,7 @@ public class DivisionHandler{
 	}
 	
 	/**
-	 * Add the file to the queue based on the file name pattern, this function is useful just for merge
+	 * Aggiunge il file alla coda in base al pattern del file, questa funzione viene utilizzata solo per l'unione
 	 * @param f	the string to analyze in order to recognize the merge mode
 	 * @param splitmode if true this function does not do anything
 	 */
@@ -64,7 +68,7 @@ public class DivisionHandler{
 	}
 	
 	/**
-	 * Remove the file from the queue
+	 * Rimuove il file dalla coda
 	 * @param index
 	 */
 	public void removeFile(int index) {
@@ -72,7 +76,7 @@ public class DivisionHandler{
 	}
 	
 	/**
-	 * Get the file by giving the index in the queue
+	 * Restituisce l'oggeto in base all'indice nelal coda
 	 * @param index
 	 */
 	public FileDiv getFile(int index) {
@@ -80,7 +84,7 @@ public class DivisionHandler{
 	}
 	
 	/**
-	 * Call the {@link FileDiv#run Run} method for each object in the queue
+	 * Chiama il metodo {@link FileDiv#run Run} e crea un thread per ogni oggetto nella coda
 	 */
 	public void execute() {
 		//ArrayList threads = new ArrayList();
@@ -109,6 +113,9 @@ public class DivisionHandler{
 		
 	}
 	
+	/**
+	 * Rimuove tutti gli oggetti dalla coda
+	 */
 	public void clear() {
 		queue.clear();
 	}

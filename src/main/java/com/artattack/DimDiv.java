@@ -7,17 +7,23 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 
+/**
+ * In questa classe si utilizza un arraylist per la gestione della divisione, inoltre viene sovrascritto il metodo {@link DimDiv#DivideFile DivideFile} 
+ * @author marco
+ *
+ */
 public class DimDiv extends FileDiv{
 	
 	/**
-	 * This arraylist is used to store the size of each file's part, this needs to be handled 
-	 * by the user of the class <br>
-	 * By default it split the file in two equal parts
+	 * L'arraylist è utilizzato per memorizzare la grandezza di ogni parte, esso deve essere gestito
+	 * dall'utilizzatore della classe <br>
+	 * 
+	 * Di default divide il file in 2 parti uguali
 	 */
 	public ArrayList<Long> division = new ArrayList<Long>();
 	
 	/**
-	 * The constructor simply call the father's one 
+ 	 * 
 	 * @param fname
 	 * @param mode
 	 */
@@ -42,11 +48,9 @@ public class DimDiv extends FileDiv{
 
 
 	/**
-	 * Ask the user the dimension of each file part, the dimension is asked in Kb
-	 * <br>
-	 * It divides the file in two equal parts if {@link DimDiv#division division} array is empty
+	 * Divide il file basandosi sull'array {@link DimDiv#division division}, se vuoto lo divide in due parti uguali
 	 * 
-	 * @return the number of parts, -1 if the operation fails 0 if the splitmode is false
+	 * @return il numero di parti, -1 se l'operazione fallisce 0 if se splitmode è false
 	 */
 	public long DivideFile() {
 		if(isSplitmode()) {
@@ -82,7 +86,7 @@ public class DimDiv extends FileDiv{
 	}
 	
 	/**
-	 * Function for default division method, split the file in two equal parts
+	 * Funzione per impostare l'arraylist di default, due parti uguali
 	 */
 	private void defaultDivision() {
 		File f = new File(getFilename());
@@ -93,7 +97,7 @@ public class DimDiv extends FileDiv{
 	}
 	
 	/**
-	 * @return the division
+	 * @return l'array usato per la divisione
 	 */
 	public ArrayList<Long> getDivision() {
 		return division;

@@ -7,11 +7,14 @@ import GUI.AppFrame;
 /**
 *
 * File Splitter
-* <p>This program takes one file as input and divide it following different split routines </p><br>
+* 
+* 
+* <p>Il programma presenta due pannelli dove rispettivamente si possono unire e dividere dei file</p>
+* <p>Sono presenti tre tipi di divisioni</p><br>
 * <ul>
-* 	<li>By default it divides file by a frame size taken as input</li>
-* 	<li>Divide file in N parts </li>
-* 	<li>Divide file by specifying the dimension of each part </li>
+* 	<li>Di default si divide il file in parti uguali in base alla grandezza specificata per ogni parte</li>
+* 	<li>Divide il file in un numero specificabile di parti </li>
+* 	<li>Divide il file impostando singolarmente la grandezza di ogni parte </li>
 * </ul>
 * 
 * 
