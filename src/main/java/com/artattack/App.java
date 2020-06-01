@@ -1,7 +1,7 @@
 package com.artattack;
 
 import java.awt.Color;
-import java.io.IOException;
+
 import GUI.AppFrame;
 
 /**
@@ -25,11 +25,11 @@ import GUI.AppFrame;
 public class App{
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		
 		AppFrame a = new AppFrame("coso", new Color(242,242,242));
-		
-		a.setVisible(true);
+		a.setVisible(true);	
+  
+	    	
 		
 		/*
 		int scelta = 2;

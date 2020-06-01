@@ -1,6 +1,5 @@
 package GUI;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 
 import javax.swing.JComponent;
@@ -127,7 +126,7 @@ public class AppFrame extends JFrame{
 	 * @param jpl the jpl to set
 	 */
 	public void setJpl(int w, int h, Color c) {
-		this.jpl = new MergePanel(w,h,c);
+		this.jpl = new MergePanel(w, h, c, "Unisci File");
 	}
 
 	/**
@@ -141,6 +140,6 @@ public class AppFrame extends JFrame{
 	 * @param jpr the jpr to set
 	 */
 	public void setJpr(int w, int h, Color c) {
-		this.jpr =  new SplitPanel(w,h,c);
+		this.jpr =  new SplitPanel(w, h, c, "Dividi File");
 	}
 }

@@ -1,7 +1,5 @@
 package com.artattack;
 
-import java.awt.List;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
@@ -10,19 +8,23 @@ import java.util.regex.Pattern;
  * @author marco
  *
  */
-public class DivisionHandler {
+public class DivisionHandler{
 	
 	private ArrayList<FileDiv> queue;
 	
-	private boolean completed = false;
-
+	/**
+	 * Used in the {@link DivisionHandler#execute execute} function to count how many files have been completed
+	 */
+	private int currCompletedElements = 0;
+	
 	private String FileDivReg = "^(\\./)?.*\\.frame\\..*";
 	private String DimDivReg = "^(\\./)?.*\\.dim\\..*";
 	private String PartDivReg = "^(\\./)?.*\\.part\\..*";
-	
 
 	private String ZipReg = ".*(?:\\.frame\\.|\\.dim\\.|\\.part\\.)(crypt\\.)?.*\\.zip$";
 	private String CryptReg = ".*(?:\\.frame\\.|\\.dim\\.|\\.part\\.)crypt\\..*";
+	
+	
 	
 	public DivisionHandler() {
 		this.queue = new ArrayList<FileDiv>();
@@ -37,25 +39,28 @@ public class DivisionHandler {
 	}
 	
 	/**
-	 * Add the file to the queue based on the file name pattern
-	 * @param f
+	 * Add the file to the queue based on the file name pattern, this function is useful just for merge
+	 * @param f	the string to analyze in order to recognize the merge mode
+	 * @param splitmode if true this function does not do anything
 	 */
 	public void addFile(String f, boolean splitmode) {
-		boolean filediv = Pattern.matches(FileDivReg, f);		
-		boolean dimdiv = Pattern.matches(DimDivReg, f);
-		boolean partdiv = Pattern.matches(PartDivReg, f);
-		
-		boolean zip = Pattern.matches(ZipReg, f);
-		boolean crypt = Pattern.matches(CryptReg, f);
-		
-		if(filediv)
-			queue.add(new FileDiv(f, splitmode, crypt, zip, 4096));
+		if(!splitmode) {
+			boolean filediv = Pattern.matches(FileDivReg, f);		
+			boolean dimdiv = Pattern.matches(DimDivReg, f);
+			boolean partdiv = Pattern.matches(PartDivReg, f);
 			
-		else if(dimdiv)
-			queue.add(new DimDiv(f, splitmode, crypt, zip)); 
+			boolean zip = Pattern.matches(ZipReg, f);
+			boolean crypt = Pattern.matches(CryptReg, f);
 			
-		else if(partdiv)
-			queue.add(new PartDiv(f, splitmode, crypt, zip, 4)); 
+			if(filediv)
+				queue.add(new FileDiv(f, splitmode, crypt, zip));
+				
+			else if(dimdiv)
+				queue.add(new DimDiv(f, splitmode, crypt, zip)); 
+				
+			else if(partdiv)
+				queue.add(new PartDiv(f, splitmode, crypt, zip)); 
+		}
 	}
 	
 	/**
@@ -77,32 +82,41 @@ public class DivisionHandler {
 	/**
 	 * Call the {@link FileDiv#run Run} method for each object in the queue
 	 */
-	public synchronized void execute() {
-		ArrayList threads = new ArrayList();
+	public void execute() {
+		//ArrayList threads = new ArrayList();
 
 		for(int i=0; i < queue.size(); i++) {
 			FileDiv e = queue.get(i);
 			Thread t = new Thread(e);
 			t.start();
-			threads.add(t);
+			//threads.add(t);
 			//long parts = e.DivideFile();
 			//System.out.println("FINITO: " + e.getFilename() + " diviso in " + parts + " parti");
 		}
 		
-		for (int i=0; i < threads.size(); i++)
+		/*
+		for (int i=0; i < threads.size(); i++) {
 			try {
 				((Thread) threads.get(i)).join();
+				this.currCompletedElements++;
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}
+		*/
+		this.clear();
 		
 	}
 	
-	public synchronized void clear() {
+	public void clear() {
 		queue.clear();
 	}
 	
+	/**
+	 * 
+	 * @return the number of file in the queue
+	 */
 	public int getLength() {
 		return queue.size();
 	}
@@ -118,19 +132,19 @@ public class DivisionHandler {
 		
 		return out;
 	}
-	
+
 	/**
-	 * @return the completed
+	 * @return the currCompletedElements
 	 */
-	public boolean isCompleted() {
-		return completed;
+	public int getCurrCompletedElements() {
+		return currCompletedElements;
 	}
 
 	/**
-	 * @param completed the completed to set
+	 * @param currCompletedElements the currCompletedElements to set
 	 */
-	public void setCompleted(boolean completed) {
-		this.completed = completed;
+	public void setCurrCompletedElements(int currCompletedElements) {
+		this.currCompletedElements = currCompletedElements;
 	}
 	
 }

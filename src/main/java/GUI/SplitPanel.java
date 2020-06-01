@@ -7,25 +7,25 @@ import java.util.ArrayList;
 import javax.swing.JFileChooser;
 
 import com.artattack.DimDiv;
-import com.artattack.DivisionHandler;
 import com.artattack.FileDiv;
 import com.artattack.PartDiv;
 
 public class SplitPanel extends AppPanel{
 
-	public SplitPanel(int w, int h) {
-		super(w, h);
+	public SplitPanel(int w, int h, String textType) {
+		super(w, h, textType);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public SplitPanel(int w, int h, Color c) {
-		super(w, h, c);
+	public SplitPanel(int w, int h, Color c, String textType) {
+		super(w, h, c, textType);
 		jobQueue = new ArrayList<SplitJobUI>();
 	}
 	
 
 	@Override
-	protected synchronized void startBtnAction() {
+	protected void startBtnAction() {
+		
 		for(int i = 0; i < jobQueue.size(); i++) {
 			/*System.out.print(getJob(i).getJobType().getSelectedItem());
 			System.out.print(getJob(i).toZip());
@@ -39,7 +39,7 @@ public class SplitPanel extends AppPanel{
 			switch(JobType) {
 				case "FrameDiv" :
 					//ask for buffer size
-					job = new FileDiv(fname, true, getJob(i).toCrypt(), getJob(i).toZip(), 4096);
+					job = new FileDiv(fname, true, getJob(i).toCrypt(), getJob(i).toZip(), getJob(i).getBufferField()*1024);
 					System.out.println("ADDED");
 					break;
 					
@@ -64,11 +64,9 @@ public class SplitPanel extends AppPanel{
 			
 		}
 	
-		
-		mainQueue.execute();
+		//start jprogressbar here
 
-		mainQueue.clear();
-		clearContainer();
+		
 		//System.out.println(splitQueue.toString());
 	}
 

@@ -58,6 +58,22 @@ public class PartDiv extends FileDiv{
 	 * @param zip
 	 * @param numparts
 	 */
+	public PartDiv(String fname, boolean mode, boolean crypt, boolean zip) {
+		super(fname, mode, crypt, zip);
+		setEXT(".part");
+		if (mode) 
+			setBufferSize();
+	}
+	
+	/**
+	 * Use this constructor if crypt or zip functions are needed
+	 * 
+	 * @param fname
+	 * @param mode
+	 * @param crypt
+	 * @param zip
+	 * @param numparts
+	 */
 	public PartDiv(String fname, boolean mode, boolean crypt, boolean zip, int numparts) {
 		super(fname, mode, crypt, zip);
 		setNumParts(numparts);
@@ -75,8 +91,8 @@ public class PartDiv extends FileDiv{
 		File f = new File(getFilename());
 		//int d = (int) f.length() / getNumParts();
 		this.BufferSize = (int) f.length() / getNumParts();
-		//long r = f.length() % getNumParts();
-		
+		long r = f.length() % getNumParts();
+		this.BufferSize += r;
 	}
 	/**
 	 * @return the numParts

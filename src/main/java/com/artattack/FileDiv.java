@@ -8,7 +8,6 @@ import com.google.crypto.tink.JsonKeysetReader;
 import com.google.crypto.tink.KeysetHandle;
 import com.google.crypto.tink.aead.AeadConfig;
 import com.google.crypto.tink.aead.AeadKeyTemplates;
-import com.google.crypto.tink.proto.Keyset;
 import com.google.crypto.tink.JsonKeysetWriter;
 
 import java.io.File;
@@ -332,7 +331,8 @@ public class FileDiv implements Runnable{
                 fos.close();
                 zipEntry = zis.getNextEntry();
             }
-			
+            
+            zis.close();
             return outputFileName;
 			
 		}else {
@@ -515,7 +515,10 @@ public class FileDiv implements Runnable{
 	 * @param BufferSize the default BufferSize is 4Kb
 	 */
 	public void setBufferSize(int BufferSize) {
-		this.BufferSize = BufferSize;
+		if(BufferSize == 0) 
+			this.BufferSize = 4096;
+		else
+			this.BufferSize = BufferSize;
 	}
 
 	/**

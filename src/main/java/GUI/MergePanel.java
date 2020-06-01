@@ -2,23 +2,19 @@ package GUI;
 
 import java.awt.Color;
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
-import com.artattack.DivisionHandler;
 import com.artattack.FileDiv;
-import com.artattack.PartDiv;
 
 public class MergePanel extends AppPanel{
 		
-	public MergePanel(int w, int h) {
-		super(w, h);
+	public MergePanel(int w, int h, String textType) {
+		super(w, h, textType);
 	}
-	public MergePanel(int w, int h, Color c) {
-		super(w, h, c);
+	public MergePanel(int w, int h, Color c, String textType) {
+		super(w, h, c, textType);
 	}
 	
 	

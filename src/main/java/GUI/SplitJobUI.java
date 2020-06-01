@@ -6,7 +6,7 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.text.ParseException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
@@ -16,9 +16,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.text.MaskFormatter;
 
 public class SplitJobUI extends JobUI{
 
@@ -26,6 +24,9 @@ public class SplitJobUI extends JobUI{
 	protected JCheckBox cryptBtn;
 	
 	protected JComboBox<String> jobType;
+
+	protected JLabel bufferFieldLabel;
+	protected JFormattedTextField bufferField;
 	
 	protected JLabel txtFieldLabel;
 	protected JFormattedTextField numPartField;
@@ -50,14 +51,19 @@ public class SplitJobUI extends JobUI{
 		
 		jobType = new JComboBox<String>(jobCategories);
 		
+		//label + textfield per inserimento grandezza buffer
+		bufferFieldLabel = new JLabel("Buffer (Kb)");
+		bufferFieldLabel.setVisible(true);
+		bufferField = new JFormattedTextField(NumberFormat.getNumberInstance());
+		
+		bufferField.setVisible(true);
+		bufferField.setPreferredSize(new Dimension(30,20));
+		
 		//label + textfield per inserimento parti
 		txtFieldLabel = new JLabel("N.Parti");
 		txtFieldLabel.setVisible(false);
-		try {
-			numPartField = new JFormattedTextField(new MaskFormatter("#"));
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+		numPartField = new JFormattedTextField(NumberFormat.getNumberInstance());
+		
 		numPartField.setVisible(false);
 		numPartField.setPreferredSize(new Dimension(30,20));
 		
@@ -78,6 +84,8 @@ public class SplitJobUI extends JobUI{
 		this.add(zipBtn);
 		this.add(cryptBtn);
 		this.add(jobType);
+		this.add(bufferFieldLabel);
+		this.add(bufferField);
 		this.add(txtFieldLabel);
 		this.add(numPartField);
 		this.add(dimdivButton);
@@ -97,6 +105,14 @@ public class SplitJobUI extends JobUI{
 		jobType.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if(jobType.getSelectedItem().toString() == "FrameDiv") {
+					bufferField.setVisible(true); 
+					bufferFieldLabel.setVisible(true);
+				} else {
+					bufferField.setVisible(false); 
+					bufferFieldLabel.setVisible(false);
+				}
+				
 				if(jobType.getSelectedItem().toString() == "PartDiv") {
 					numPartField.setVisible(true); 
 					txtFieldLabel.setVisible(true);
@@ -255,6 +271,22 @@ public class SplitJobUI extends JobUI{
 	 */
 	public void setJobCategories(String[] jobCategories) {
 		this.jobCategories = jobCategories;
+	}
+	
+	
+	
+	/**
+	 * @return the bufferField
+	 */
+	public int getBufferField() {
+		return Integer.parseInt(bufferField.getText());
+	}
+
+	/**
+	 * @param bufferField the bufferField to set
+	 */
+	public void setBufferField(JFormattedTextField bufferField) {
+		this.bufferField = bufferField;
 	}
 
 	/**
