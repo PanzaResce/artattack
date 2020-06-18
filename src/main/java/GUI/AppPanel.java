@@ -38,12 +38,12 @@ public abstract class AppPanel<Job extends JobUI> extends JPanel implements Acti
 	/**
 	 * ArrayList which store the generic Jobs, the effective classes will insert their type of job (SplitPanel -> SplitJobUI)
 	 */
-	ArrayList<Job> jobQueue = new ArrayList<Job>();
+	protected ArrayList<Job> jobQueue = new ArrayList<Job>();
 
 	/**
 	 * Object which implement the queue for the job that will be split/divided
 	 */
-	DivisionHandler mainQueue = new DivisionHandler();
+	protected DivisionHandler mainQueue = new DivisionHandler();
 
 	
 	public AppPanel(int w, int h, String textType) {
