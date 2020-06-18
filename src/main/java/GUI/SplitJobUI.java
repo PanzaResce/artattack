@@ -26,10 +26,10 @@ public class SplitJobUI extends JobUI{
 	protected JComboBox<String> jobType;
 
 	protected JLabel bufferFieldLabel;
-	protected JFormattedTextField bufferField;
+	protected JTextField bufferField;
 	
 	protected JLabel txtFieldLabel;
-	protected JFormattedTextField numPartField;
+	protected JTextField numPartField;
 	
 	protected ImageIcon settingsIcon = new ImageIcon("src/main/resources/settings.png");
 	protected JButton dimdivButton;
@@ -54,15 +54,17 @@ public class SplitJobUI extends JobUI{
 		//label + textfield per inserimento grandezza buffer
 		bufferFieldLabel = new JLabel("Buffer (Kb)");
 		bufferFieldLabel.setVisible(true);
-		bufferField = new JFormattedTextField(NumberFormat.getNumberInstance());
+		bufferField = new JTextField();
 		
 		bufferField.setVisible(true);
 		bufferField.setPreferredSize(new Dimension(30,20));
+		bufferField.setText("4");
 		
 		//label + textfield per inserimento parti
 		txtFieldLabel = new JLabel("N.Parti");
 		txtFieldLabel.setVisible(false);
-		numPartField = new JFormattedTextField(NumberFormat.getNumberInstance());
+		numPartField = new JTextField();
+		numPartField.setText("2");
 		
 		numPartField.setVisible(false);
 		numPartField.setPreferredSize(new Dimension(30,20));
@@ -179,8 +181,9 @@ public class SplitJobUI extends JobUI{
 				do {
 					String s = (String)JOptionPane.showInputDialog(
 		                    container,
-		                    "Specificare grandezza parte in Kb ("+humanReadableByteCountBin(remains)+"Kb rimanenti) \n "
-		                    		+ "Immettere 0 per impostare l'ultima parte con l'ammontare rimanente",
+		                    "Specificare grandezza parte in KiB ("+humanReadableByteCountBin(remains)+" rimanenti) \n "
+		                    		+ "Immettere 0 per impostare l'ultima parte con l'ammontare rimanente \n" 
+		                    		+ "(1000KiB = 1MiB)",
 		                    "Divisione",
 		                    JOptionPane.PLAIN_MESSAGE
 		                    );
@@ -279,7 +282,11 @@ public class SplitJobUI extends JobUI{
 	 * @return the bufferField
 	 */
 	public int getBufferField() {
-		return Integer.parseInt(bufferField.getText());
+		String buff = bufferField.getText();
+		if(buff.equals("") || buff.isEmpty())
+			return 0;
+		else
+			return Integer.parseInt(buff);
 	}
 
 	/**
@@ -293,7 +300,11 @@ public class SplitJobUI extends JobUI{
 	 * @return the numPartField
 	 */
 	public int getNumPartField() {
-		return Integer.parseInt(numPartField.getText());
+		String part = numPartField.getText();
+		if(part.equals("") || part.isEmpty())
+			return 0;
+		else
+			return Integer.parseInt(part);
 	}
 
 	/**

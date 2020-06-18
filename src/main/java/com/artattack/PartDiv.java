@@ -105,6 +105,7 @@ public class PartDiv extends FileDiv{
 	 * @param numParts the numParts to set
 	 */
 	public void setNumParts(int numParts) {
-		this.numParts = numParts;
+		if (numParts != 0)
+			this.numParts = numParts;
 	}
 }
