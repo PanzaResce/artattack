@@ -18,6 +18,21 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
+/**
+ * La classe predisponde tutti gli oggetti grafici per personalizzare il tipo di divisione da effettuare. <br>
+ * 
+ * Tutti i vari Listener per gli eventi sono gestiti tramite i seguenti metodi:
+ * <ul>
+ * 		<li>{@link SplitJobUI#checkBoxListener}</li>
+ * 		<li>{@link SplitJobUI#comboBoxListener}</li>
+ * 		<li>{@link SplitJobUI#settingsButtonListener}</li>
+ * </ul>
+ * 
+ * Tutti e tre i metodi sono chiamati dal costruttore
+ * @author marco
+ *
+ */
+
 public class SplitJobUI extends JobUI{
 
 	protected JCheckBox zipBtn;
@@ -100,8 +115,8 @@ public class SplitJobUI extends JobUI{
 	}
 	
 	/**
-	 * show/hide the numPartFiled if "PartDiv" is selected
-	 * show/hide the settings icon if "DimDiv" is selected
+	 * mostra/nasconde il field per il numero di aprti se "PartDiv" è selezionato
+	 * mostra/nasconde il bottone settings se "DimDiv" è selezionato
 	 */
 	private void comboBoxListener() {
 		jobType.addActionListener(new ActionListener() {
@@ -136,7 +151,7 @@ public class SplitJobUI extends JobUI{
 	}
 
 	/**
-	 * Show/hide pswField if cryptBtn is selected 
+	 * mostra/nasconde il campo per inserire la password se "Crypt" è selezionato
 	 */
 	private void checkBoxListener() {
 		zipBtn.addActionListener(new ActionListener() {
@@ -166,7 +181,12 @@ public class SplitJobUI extends JobUI{
 		});
 	}
 	
-	
+	/**
+	 * Se attivo, predispone un input in cui l'utente può inserire la dimensione della singola parte fino a quando non si riempe
+	 * tutto lo spazio del file
+	 * 
+	 * @param container
+	 */
 	private void settingsButtonListener(final Container container) {
 		
 

@@ -8,8 +8,23 @@ import javax.swing.JOptionPane;
 
 import com.artattack.FileDiv;
 
-public class MergePanel extends AppPanel{
-		
+/**
+ * 
+ * Classe concreta che implementa il pannello di unione dei file, utilizza l'oggetto JobUI
+ * 
+ * Con il bottone Start, metodo {@link MergePanel#fileBtnAction()}, si sceglie il file dal quale effettuare l'unione, 
+ * questo file deve essere il primo (indice = 0) generato dalle precedenti operazioni di divisione. <br>
+ * 
+ * Il metodo {@link MergePanel#startBtnAction()} riempe l'oggetto {@link AppPanel#mainQueue} e esegue le varie unioni
+ * 
+ * @author marco
+ *
+ */
+
+public class MergePanel extends AppPanel<JobUI>{
+
+	private static final long serialVersionUID = 1L;
+
 	public MergePanel(int w, int h, String textType) {
 		super(w, h, textType);
 	}
@@ -17,7 +32,10 @@ public class MergePanel extends AppPanel{
 		super(w, h, c, textType);
 	}
 	
-	
+	/**
+	 * Per ogni file controlla se è criptato e in caso, tramite un input, chiede di inserire la password. <br>
+	 * Se si insersice la password sbagliata, l'applicativo non restitusice nessun messaggio di errore ma il file decifrato sarà inconsistente.
+	 */
 	@Override
 	protected void startBtnAction() {
 		for(int i = 0; i < jobQueue.size(); i++) {
@@ -57,6 +75,9 @@ public class MergePanel extends AppPanel{
 
 	}
 	
+	/**
+	 * Apre un JFileChooser e chiama il metodo {@link AppPanel#addElementToContainer(JobUI)} passando un oggetto di tipo {@link JobUI} 
+	 */
 	@Override
 	protected void fileBtnAction() {
 		JFileChooser fc = new JFileChooser();

@@ -3,10 +3,10 @@ package com.artattack;
 import java.io.File;
 
 /**
- * This class is used to divide the file in a specified number of parts 
+ * Questa classe è utilizzata per dividere i file in N parti uguali <br>
  * 
- * For the split and merge functions the {@link FileDiv#DivideFile DivideFile} and {@link FileDiv#MergeFile MergeFile}
- * are used without overriding
+ * Per le operazioni di divisione e unione viene chiamata il metodo del padre 
+ * {@link FileDiv#DivideFile DivideFile} o {@link FileDiv#MergeFile MergeFile} senza override
  * 
  * @author marco
  *
@@ -15,17 +15,17 @@ import java.io.File;
 public class PartDiv extends FileDiv{
 	
 	/**
-	 * The number of parts in which the file will be split
+	 * Il numero di part in cui il file verrà diviso, di default 2
 	 */
 	private int numParts = 2;
 	
 	/**
-	 * The buffer size needs to be specified for the split function, it is not needed 
-	 * for the merge function
 	 * 
-	 * @param fname
-	 * @param numparts The number of parts in which the file will be divided
-	 * @param mode Set to true for split-mode or false for merge-mode
+	 * In base al numero di parti passate, si imposta il valore del buffer di divisione
+	 * 
+	 * @param fname il nome del file
+	 * @param numparts Il numero di parti in cui il file verrà diviso
+	 * @param mode Impostato a true per la modalità divisione o false per la modalità unione
 	 */
 	public PartDiv(String fname, boolean mode, int numparts) {
 		super(fname, mode);
@@ -37,10 +37,11 @@ public class PartDiv extends FileDiv{
 	
 	
 	/**
-	 * This constructor is specified used when the class runs in merge mode, 
-	 * in this case the number of parts is not necessary
-	 * @param fname
-	 * @param mode
+	 * Questo costruttore è usato in particolare per la modalità unione, infatti
+	 * il numero di parti non è necessario
+	 * 
+	 * @param fname il nome del file
+	 * @param mode true se in modalità divisione, false se in modalità unione
 	 */
 	public PartDiv(String fname, boolean mode) {
 		super(fname, mode);
@@ -50,13 +51,10 @@ public class PartDiv extends FileDiv{
 	}
 	
 	/**
-	 * Use this constructor if crypt or zip functions are needed
+	 * Costruttore usato se le operazioni di criptaggio e compressione sono richieste
 	 * 
-	 * @param fname
-	 * @param mode
-	 * @param crypt
-	 * @param zip
-	 * @param numparts
+	 * @param fname il nome del file
+	 * @param mode true se in modalità divisione, false se in modalità unione
 	 */
 	public PartDiv(String fname, boolean mode, boolean crypt, boolean zip) {
 		super(fname, mode, crypt, zip);
@@ -66,13 +64,12 @@ public class PartDiv extends FileDiv{
 	}
 	
 	/**
-	 * Use this constructor if crypt or zip functions are needed
 	 * 
 	 * @param fname
 	 * @param mode
 	 * @param crypt
 	 * @param zip
-	 * @param numparts
+	 * @param numparts il numero di parti nel quale si vuole dividere il file	 
 	 */
 	public PartDiv(String fname, boolean mode, boolean crypt, boolean zip, int numparts) {
 		super(fname, mode, crypt, zip);
@@ -85,7 +82,7 @@ public class PartDiv extends FileDiv{
 	
 	
 	/**
-	 * The buffer size needs to be specified for the split function 
+	 * Chiamata dal costruttore per impostare la corretta grandezza di ogni buffer in base a {@link PartDiv#numParts numParts} 
 	 */
 	public void setBufferSize() {
 		File f = new File(getFilename());
@@ -95,7 +92,7 @@ public class PartDiv extends FileDiv{
 		this.BufferSize += r;
 	}
 	/**
-	 * @return the numParts
+	 * @return il numero di parti
 	 */
 	public int getNumParts() {
 		return numParts;

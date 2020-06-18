@@ -4,12 +4,19 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 /**
- * Class that handles FileDiv objects with a simple queue (ArrayList)
+ * La classe che gestisce i tipi di classe {@link FileDiv} con una coda (ArrayList). <br>
+ * 
+ * Questa classe non distingue tra divisione e unione, poichè chiamando il metodo {@link FileDiv#run run} dell classe {@link FileDiv} 
+ * viene scelta in automatico l'operazione corretta.
+ * 
  * @author marco
  *
  */
 public class DivisionHandler{
 	
+	/**
+	 * La coda che contiene gli oggetti {@link FileDiv}
+	 */
 	private ArrayList<FileDiv> queue;
 	
 	/**
@@ -25,23 +32,26 @@ public class DivisionHandler{
 	private String CryptReg = ".*(?:\\.frame\\.|\\.dim\\.|\\.part\\.)crypt\\..*";
 	
 	
-	
+	/**
+	 * Il costruttore semplicemente istanzia la coda {@link DimDiv#division} 
+	 */
 	public DivisionHandler() {
 		this.queue = new ArrayList<FileDiv>();
 	}
 	
 	/**
-	 * Add the file to the queue
-	 * @param f
+	 * Aggiunge il file alla coda
+	 * @param f l'oggetto {@link FileDiv#FileDiv FileDiv}
 	 */
 	public void addFile(FileDiv f) {
 		queue.add(f);
 	}
 	
 	/**
-	 * Add the file to the queue based on the file name pattern, this function is useful just for merge
-	 * @param f	the string to analyze in order to recognize the merge mode
-	 * @param splitmode if true this function does not do anything
+	 * Aggiunge il file alla coda in base al pattern del file, questa funzione viene utilizzata solo per l'unione, la funzione analizza
+	 * il nome del file per capire se è criptato o zippato
+	 * @param f	il nome del file da analizzare
+	 * @param splitmode se true la funzione non esegue nessun'azione
 	 */
 	public void addFile(String f, boolean splitmode) {
 		if(!splitmode) {
@@ -64,23 +74,24 @@ public class DivisionHandler{
 	}
 	
 	/**
-	 * Remove the file from the queue
-	 * @param index
+	 * Rimuove il file dalla coda
+	 * @param index l'indice dell'elemento da eliminare
 	 */
 	public void removeFile(int index) {
 		queue.remove(index);
 	}
 	
 	/**
-	 * Get the file by giving the index in the queue
-	 * @param index
+	 * Restituisce l'oggeto in base all'indice nella coda
+	 * @param index l'indice dell'elemento che si vuole ottenere
+	 * @return l'oggetto richiesto
 	 */
 	public FileDiv getFile(int index) {
 		return queue.get(index);
 	}
 	
 	/**
-	 * Call the {@link FileDiv#run Run} method for each object in the queue
+	 * Chiama il metodo {@link FileDiv#run Run} e crea un thread per ogni oggetto nella coda
 	 */
 	public void execute() {
 		//ArrayList threads = new ArrayList();
@@ -109,6 +120,9 @@ public class DivisionHandler{
 		
 	}
 	
+	/**
+	 * Rimuove tutti gli oggetti dalla coda
+	 */
 	public void clear() {
 		queue.clear();
 	}

@@ -1,1 +1,1 @@
-typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"com.artattack","l":"App"},{"p":"com.artattack","l":"FileDiv"}]
+typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"com.artattack","l":"App"},{"p":"GUI","l":"AppFrame"},{"p":"GUI","l":"AppPanel"},{"p":"com.artattack","l":"DimDiv"},{"p":"com.artattack","l":"DivisionHandler"},{"p":"com.artattack","l":"FileDiv"},{"p":"GUI","l":"JobUI"},{"p":"GUI","l":"MergePanel"},{"p":"com.artattack","l":"PartDiv"},{"p":"GUI","l":"SplitJobUI"},{"p":"GUI","l":"SplitPanel"}]

@@ -21,79 +21,102 @@ import java.util.zip.*;
 
 /**
  * 
- * This class define the behavior of a general file division routine
+ * Questa è la classe padre che definisce il comportamento di una generale routine di divisione/unione.
  * <br>
- *  By default this class divide the file in even parts of 4Kb each, otherwise the part size can be specified
+ *  Di default questa classe divide il file in parti uguali da 4 Kb l'una, la grandezza per ogni parte può comunque essere specificata.
  * <br>
- * The {@link FileDiv#splitmode splitmode} property determine the usage of the class, 
- * if set to true the file passed to the constructor is the one who will be split, 
- * if set to false the file passed need to be the first generated from the split routine (Ex : 
- * {@code file0.frame.txt} )
+ * La proprietà {@link FileDiv#splitmode splitmode} determina se la classe verrà usata per le operazion di divisione o di unione, 
+ * se impostata a valore {@code true} il file passato tramite il costruttre sarà diviso,
+ * se impostata a {@code false} il file passato deve essere il primo generato dalla divisione (Ex : 
+ * {@code file0.frame.txt} ) per poi poter eseguire l'unione.
  * <br>
  * 
- * This tool use the Tink library to encrypt and decrypt data with the <a href ="https://github.com/google/tink/blob/master/docs/JAVA-HOWTO.md">Symmetric Key Encryption</a>
+ * I metodi che eseguono la divisione e l'unione sono rispettivamente {@link FileDiv#DivideFile()} e {@link FileDiv#MergeFile()}.
+ * <br>
  * 
+ * La classe implementa anche l'interfaccia {@code Runnable} in modo che si possa affidare la divisione/unione di ogni file ad un
+ * singolo thread ({@link FileDiv#run}).
+ * <br>
+ * Questo tool utilizza la libreria Tink per criptare e decriptare i dati con la  <a href ="https://github.com/google/tink/blob/master/docs/JAVA-HOWTO.md">Symmetric Key Encryption</a>
  * @author marco
  *
  */
 public class FileDiv implements Runnable{
-	protected boolean encrypted;
-	protected boolean zipped;
+	
 	/**
-	 * splitmode determine the usage of the class, if set to true the {@link FileDiv#DivideFile DivideFile} 
-	 * method can be triggered otherwise the {@link FileDiv#MergeFile MergeFile} method can be triggered
+	 * se impostata a {@code true} il file passato alla classe verrà criptato (se {@link FileDiv#splitmode splitmode} è {@code true})
+	 * o decriptato ((se {@link FileDiv#splitmode splitmode} è {@code false})
+	 */
+	protected boolean encrypted;
+	
+	/**
+	 * se impostata a {@code true} il file passato alla classe verrà compresso (se {@link FileDiv#splitmode splitmode} è {@code true})
+	 * o decompresso ((se {@link FileDiv#splitmode splitmode} è {@code false})
+	 */
+	protected boolean zipped;
+	
+	/**
+	 * splitmode determina come verrà utilizzata la calsse, se impostata a true il metodo {@link FileDiv#DivideFile DivideFile} può essere
+	 * utilizzato, altrimenti si potrà utilizzare il metodo {@link FileDiv#MergeFile MergeFile} per l'unione
 	 * 
 	 */
 	protected boolean splitmode;
+	
 	/**
-	 * if {@link FileDiv#splitmode splitmode} is true it represents the file to be split, 
-	 * if false it is the first file generated from the {@link FileDiv#DivideFile DivideFile} operation
+	 * se {@link FileDiv#splitmode splitmode} è impostata a {@code true} , filename rappresenta il file da dividere,
+	 * se {@code false} filename rapprenseta il primo file generato dal metodo {@link FileDiv#DivideFile DivideFile}
 	 */
 	protected String filename;
 	
 	/**
-	 * Define the size of each file after the division 
+	 * Definisce la dimensione di ogni singolo file dopo la divisione
 	 */
 	protected int BufferSize = 4096;
 	
 	/**
-	 * psw is set to a specific data if the {@link FileDiv#encrypted encrypted} property is true, 
-	 * it represents the password given to the archive by the user 
+	 * psw ha un valore se la proprietà {@link FileDiv#encrypted encrypted} è impostata a {@code true},
+	 * rappresenta la password utilizzata per criptare i file 
 	 */
 	protected String psw = null;
+	
 	/**
-	 * it represents the key generated in the {@link FileDiv#DivideFile DivideFile} method and 
-	 * is saved in a cleartext keysets on disk. <br>
-	 * Further implementation should change the storage system to a remote key management systems
+	 * rappresenta la chiave generata dal metodo {@link FileDiv#DivideFile DivideFile} ed è salvata
+	 * in chiaro su disco
+	 * Implementazioni future prevedono lo spostamento della chiave in un remote key management systems
 	 * 
 	 */
 	protected KeysetHandle key = null;
 	
 	/**
-	 * set to the value of the constant {@value FileDiv#CRYPT} if {@link FileDiv#encrypted encrypted} property is true
-	 * the value is set in the {@link FileDiv#setEncrypted setEncrypted} method
+	 * impostata con la costante {@value FileDiv#CRYPT} se la proprietà {@link FileDiv#encrypted encrypted} è {@code true}
+	 * il valore viene impostato nel metodo {@link FileDiv#setEncrypted setEncrypted}
 	 */
 	protected String CRYPTs = "";
+	
 	/**
-	 * set to the value of the constant {@value FileDiv#ZIP} if {@link FileDiv#zipped zipped} property is true
-	 * the value is set in the {@link FileDiv#setZipped setZipped} method
+	 * impostata con la costante {@value FileDiv#ZIP} se la proprietà {@link FileDiv#zipped zipped} è {@code true}
+	 * il valore viene impostato nel metodo {@link FileDiv#setZipped setZipped}
 	 */
 	protected String ZIPs = "";
 	
 	/**
-	 * set to a specified value for each subclass of the hierarchy
+	 * l'estensione del file di output, rappresenta anche il tipo di operazione utilizzata, ovvero la classe utilizzata. Le classi figlie
+	 * modificheranno questa proprietà per identificare il tipo di divisione che svolgeranno
 	 */
 	protected String EXT = ".frame";
 	final String CRYPT = ".crypt";
 	final String ZIP = ".zip";
 	
+	/**
+	 * Il nome del file generato per l'archiviazione della chiave 
+	 */
 	final String keyArchive = "kst.json";
 	
 	/**
-	 * The default {@code BufferSize} is 4096 (4Kb)
+	 * Il {@code BufferSize} di default è 4096 (4Kb)
 	 * 
-	 * @param fname The file name
-	 * @param mode Set to true for split-mode or false for merge-mode
+	 * @param fname Il nome del file
+	 * @param mode impostata a {@code true} per la modalità divisione, a {@code false} per unione
 	 */
 	public FileDiv(String fname, boolean mode) {
 		setFilename(fname);
@@ -110,6 +133,11 @@ public class FileDiv implements Runnable{
 		setBufferSize(buffersize);
 	}
 	
+	/**
+	 * 
+	 * @param crypt impostata a {@code true} se si vogliono criptare i file
+	 * @param zip impostata a {@code true} se si vogliono zippare i file
+	 */
 	public FileDiv(String fname, boolean mode, boolean crypt, boolean zip) {
 		setFilename(fname);
 		setSplitmode(mode);
@@ -127,7 +155,7 @@ public class FileDiv implements Runnable{
 	
 	
 	/**
-	 *	 
+	 * Chiama {@link FileDiv#DivideFile DivideFile} o {@link FileDiv#MergeFile MergeFile} in base a {@link FileDiv#splitmode splitmode}
 	 */
 	@Override
 	public void run() {
@@ -144,11 +172,12 @@ public class FileDiv implements Runnable{
 	}
 	
 	/**
-	 * Divide the file in even parts based on {@link FileDiv#BufferSize BufferSize}
-	 * <br>
-	 * Use the {@link FileDiv#readWrite readWrite} method to write
+	 * Divide il file in parti uguali in base al valore di {@link FileDiv#BufferSize BufferSize} .<br>
+	 * Usa il metodo {@link FileDiv#readWrite readWrite} per scrivere. <br>
+	 * Se il file è criptato o compresso verranno aggiunte le estensioni {@link FileDiv#CRYPT} o {@link FileDiv#ZIP} alla parte generata. <br>
+	 * Le parti generate hanno il formato nomefile+indice.formatodivisione+estensionefile {@literal ---> } file0.frame.txt, gli indici partono da 0. <br>
 	 * 
-	 * @return The number of parts, -1 if the operation fails 0 if the splitmode is false
+	 * @return Il numero di parti, -1 se l'operazione fallisce, 0 se {@link FileDiv#splitmode splitmode} è false
 	 */
 	//---REFACTOR---//
 	public long DivideFile() {
@@ -193,14 +222,14 @@ public class FileDiv implements Runnable{
 	}
 	
 	/**
-	 * Take the first file generated from the previous {@link FileDiv#DivideFile DivideFile} operation
-	 * and merge all the parts <br>
-	 * By default this method doesn't delete the parts
-	 * If the method need to merge zipped files it firstly unzip the single archives (file0.frame.txt.zip ---> file0.frame.txt) 
-	 * and then merge them all together 
-	 * @return 1 if the operation worked, 0 otherwise
-	 * @throws IOException The exception is thrown by the {@code FileNotFoundException} catch if the file passed to 
-	 * the constructor does not exists, otherwise the {@code FileNotFoundException} return 1 to the function
+	 * Prende il primo file generato in un'altra istanza dal metodo {@link FileDiv#DivideFile DivideFile}
+	 * e unisce tutte le parti in un unico file. <br>
+	 * Le varie parti devono essere tutte nella stessa directory e si presuppone che siano nel formato (nomefile+indice.formatodivisione+estensionefile) {@literal --->} filename1.frame.txt <br> 
+	 * Di default il metodo, dopo l'unione, non elemina le singole parti. <br>
+	 * Se il metodo deve unire dei file compressi, prima li decomprime (file0.frame.txt.zip {@literal --->} file0.frame.txt) e poi li unisce tutti insieme, lo stesso vale per i file criptati <br>
+	 * @return 1 se l'operazione è portata a termine, 0 altrimenti.
+	 * @throws IOException L'eccezione è lanciata dal catch {@code FileNotFoundException} se il file passato al costruttore non esiste, 
+	 * altrimenti vuol dire che l'eccezione catturata è dovuta al fatto che l'operazione di unione è stata terminata
 	 */
 	public int MergeFile() throws IOException {
 		if(!isSplitmode()) {
@@ -249,16 +278,16 @@ public class FileDiv implements Runnable{
 	}
 	
 	/**
-	 * This method read from {@code source} {@code numBytes} bytes and write to {@code dest}
-	 * <br> if {@link FileDiv#encrypted encrypted} is set to true it encrypts data if 
-	 * {@link FileDiv#splitmode splitmode} is true or decrypt if {@link FileDiv#splitmode splitmode} is false
+	 * Il metodo legge da {@code source} {@code numBytes} bytes e li scrive in {@code dest}
+	 * <br> Se {@link FileDiv#encrypted encrypted} è true e 
+	 * {@link FileDiv#splitmode splitmode} è true cripta i dati o decripta se {@link FileDiv#splitmode splitmode} è false
 	 * <br>
-	 * by deafult this method does not close the streams
+	 * Di default il metodo non chiude la stream {@code source}
 	 * 
-	 * @param source Source stream, in this class is a RandomAccessFile by default
+	 * @param source Source stream, in questa implementazione è un RandomAccessFile di default
 	 * @param dest Destination stream
-	 * @param numBytes The number of file read and written
-	 * @param encr If true the stream has to be encrypted
+	 * @param numBytes Il numero di byte letti e scritti
+	 * @param encr Se true lo stream viene criptato
 	 * @throws IOException Not handled
 	 * @see <a href ="https://docs.oracle.com/javase/7/docs/api/java/io/RandomAccessFile.html#read(byte[])">RandomAccesFile.read()</a>
 	 */
@@ -287,9 +316,8 @@ public class FileDiv implements Runnable{
 	}
 	
 	/**
-	 * Create the compressed file from the one passed to the function
-	 * @param filename
-	 * @throws IOException
+	 * Comprime il file passato alla funzione
+	 * @param filename Il file da comprimere
 	 */
 	protected void zipFile(String filename) throws IOException{
 		FileInputStream fis = new FileInputStream(filename);
@@ -308,10 +336,9 @@ public class FileDiv implements Runnable{
 	}
 	
 	/**
-	 * Unzip from {@code zippedFilename} and then return the name of the unzipped file, 
-	 * if not in zip mode return the zippedFilename as passed
-	 * @param zippedFilename
-	 * @throws IOException
+	 * Decomprime il file {@code zippedFilename} e ritorna il nome del file 
+	 * @param zippedFilename Il file da decomprimere
+	 * @return Se la classe non ha {@link FileDiv#zipped zipped} a {@code true} ritorna il nome del file passato, altrimenti il nome del file decompresso
 	 */
 	protected String unzipFile(String zippedFilename) throws IOException{
 		if(isZipped()) {
@@ -341,10 +368,10 @@ public class FileDiv implements Runnable{
 	}
 	
 	/**
-	 * Extract the name of the file from the full name, if this is used in merge-mode 
-	 * remove the {@value FileDiv#EXT} from the file name
+	 * Estrae il noem dal file (rimuove l'estensione)
+	 * Se la classe è usata in merge-mode, la funzione rimuove {@link FileDiv#EXT} dal nome del file
 	 * @param filename {@link FileDiv#filename filename}
-	 * @return Ex : {@code file1.txt ---> file1} or if {@link FileDiv#splitmode splitmode} = {@code false} 
+	 * @return Ex : {@code file1.txt ---> file1} o se {@link FileDiv#splitmode splitmode} = {@code false} 
 	 * {@code file0.frame.txt ---> file0}
 	 */
 	//---REFACTOR---//
@@ -363,7 +390,7 @@ public class FileDiv implements Runnable{
 	}
 	
 	/**
-	 * Extract the extension from the file name
+	 * Estrae l'estensione dal nome del file
 	 * @param filename {@link FileDiv#filename filename}
 	 * @return Ex : {@code file1.txt ----> .txt		file1.txt.zip ----> .txt}
 	 */
@@ -376,13 +403,13 @@ public class FileDiv implements Runnable{
 	}
 	
 	/**
-	 * This method generate the name of the part's file based on the {@link FileDiv#encrypted encrypted} value
-	 * and the {@code index} of the part<br>
+	 * Il metodo genera il nome della singola parte del file che si sta dividendo in base a {@link FileDiv#encrypted encrypted} 
+	 * e all'index della parte<br>
 	 * 
-	 * The constant {@value FileDiv#EXT} define the used division routine
+	 * La costante {@link FileDiv#EXT} definisce il tipo di divisione utilizzata
 	 * 
-	 * @param index The index of the file part
-	 * @return The file part name
+	 * @param index L'indice della parte del file
+	 * @return IL nome della parte del file
 	 */
 	protected String generateOutputFilename(long index) {
 		String filename = getFilename();
@@ -398,9 +425,7 @@ public class FileDiv implements Runnable{
 	}	
 	
 	/**
-	 * Generate the key and save it to file {@value FileDiv#keyArchive}
-	 * 
-	 * 
+	 * Genera la key e la salva su file {@value FileDiv#keyArchive}
 	 * 
 	 * @return the KeySetHandle object
 	 */
@@ -420,7 +445,7 @@ public class FileDiv implements Runnable{
 	}
 	
 	/**
-	 * Get the key from file {@value FileDiv#keyArchive}
+	 * Prende la key dal file {@value FileDiv#keyArchive}
 	 * @return the KeysetHandle object 
 	 */
 	protected KeysetHandle getKeyFromArchive() {
@@ -436,15 +461,15 @@ public class FileDiv implements Runnable{
 	}
 	
 	/**
-	 * @return true if the file is encrypted
+	 * @return true se il file è criptato o da criptare
 	 */
 	public boolean isEncrypted() {
 		return encrypted;
 	}
 
 	/**
-	 * if {@code encrypted} is true it also set the {@link FileDiv#CRYPTs CRYPTs} property to {@value FileDiv#CRYPT}
-	 * and trigger the tink register 
+	 * se {@code encrypted} è true imposta anche la proprietà {@link FileDiv#CRYPTs CRYPTs} a {@value FileDiv#CRYPT}
+	 * e attiva il Tink register 
 	 * @param encrypted the encrypted to set
 	 */
 	public void setEncrypted(boolean encrypted) {
@@ -461,14 +486,14 @@ public class FileDiv implements Runnable{
 	}
 
 	/**
-	 * @return true if the file is zipped
+	 * @return true se il file è zippato o da zippare
 	 */
 	public boolean isZipped() {
 		return zipped;
 	}
 
 	/**
-	 * if {@code zipped} is true it also set the {@link FileDiv#ZIPs ZIPs} property to {@value FileDiv#ZIP}
+	 * se {@code zipped} è {@code true} imposta la proprietà {@link FileDiv#ZIPs ZIPs} a {@value FileDiv#ZIP}
 	 * @param zipped the zipped to set
 	 */
 	public void setZipped(boolean zipped) {
@@ -477,7 +502,7 @@ public class FileDiv implements Runnable{
 	}
 	
 	/**
-	 * @return the splitmode
+	 * @return true se la classe è nella modalità divisione (split), false se unione (merge)
 	 */
 	public boolean isSplitmode() {
 		return splitmode;
@@ -491,7 +516,7 @@ public class FileDiv implements Runnable{
 	}
 
 	/**
-	 * @return the filename
+	 * @return il nome del file
 	 */
 	public String getFilename() {
 		return filename;
@@ -505,24 +530,22 @@ public class FileDiv implements Runnable{
 	}
 
 	/**
-	 * @return the BufferSize for read and write operations
+	 * @return la dimensione del buffer per le operazioni di lettura e scrittura
 	 */
 	public int getBufferSize() {
 		return BufferSize;
 	}
 
 	/**
-	 * @param BufferSize the default BufferSize is 4Kb
+	 * @param BufferSize di default è 4Kb
 	 */
 	public void setBufferSize(int BufferSize) {
-		if(BufferSize == 0) 
-			this.BufferSize = 4096;
-		else
+		if(BufferSize != 0) 
 			this.BufferSize = BufferSize;
 	}
 
 	/**
-	 * @return the psw
+	 * @return la psw
 	 */
 	public String getPsw() {
 		return psw;
@@ -536,7 +559,7 @@ public class FileDiv implements Runnable{
 	}
 
 	/**
-	 * @return the key
+	 * @return la key dell'archivio
 	 */
 	public KeysetHandle getKey() {
 		return key;
@@ -550,7 +573,7 @@ public class FileDiv implements Runnable{
 	}
 	
 	/**
-	 * @return the eXT
+	 * @return l'estensione del tipo di divisione utilizzata
 	 */
 	public String getEXT() {
 		return EXT;

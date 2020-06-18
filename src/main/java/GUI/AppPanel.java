@@ -22,6 +22,31 @@ import javax.swing.border.EmptyBorder;
 
 import com.artattack.DivisionHandler;
 
+/**
+ * 
+ * La classe predispone l'interfaccia e le funzioni base per ogni pannello dell'applicativo, in particolare si occupa di :
+ * <ul>
+ * 		<li>impostare i bottoni Start e File</li>
+ * 		<li>implementare i Listener per questi bottoni</li>
+ * 		<li>gestire l'aggiunta e/o la rimozione degli oggetti dal Container</li>
+ * </ul>
+ * 
+ * La classe prevede dei metodi astratti :
+ * <ul>
+ * 		<li>{@link AppPanel#startBtnAction()}</li>
+ * 		<li>{@link AppPanel#fileBtnAction()}</li>
+ * </ul>
+ * 
+ * Questi metodi vengono chiamati da {@link AppPanel#actionPerformed} e verranno implementati dalle classi concrete. <br>
+ * 
+ * La classe gestisce anche le Generalizzazioni di {@link JobUI}, in particolare si occupa degli eventi generati dagli oggetti di tipo {@link JobUI} 
+ * tramite il metodo {@link AppPanel#actionPerformed}.
+ * 
+ * @author marco
+ *
+ * @param <Job>
+ */
+
 public abstract class AppPanel<Job extends JobUI> extends JPanel implements ActionListener {
 	
 	
@@ -36,12 +61,12 @@ public abstract class AppPanel<Job extends JobUI> extends JPanel implements Acti
 	
 	
 	/**
-	 * ArrayList which store the generic Jobs, the effective classes will insert their type of job (SplitPanel -> SplitJobUI)
+	 * ArrayList che memorizza i singoli jobs, in base al tipo di classe verranno inseriti i jobs corretti (SplitPanel {@literal --->} SplitJobUI)
 	 */
 	protected ArrayList<Job> jobQueue = new ArrayList<Job>();
 
 	/**
-	 * Object which implement the queue for the job that will be split/divided
+	 * Implementazione dell'oggetto {@link com.artattack.DivisionHandler} che memorizza gli oggetti di tipo {@link com.artattack.FileDiv} che verranno divisi/uniti
 	 */
 	protected DivisionHandler mainQueue = new DivisionHandler();
 
@@ -151,11 +176,15 @@ public abstract class AppPanel<Job extends JobUI> extends JPanel implements Acti
 		comp.setBorder(new CompoundBorder(border, margin));
 	}
 	
+	/**
+	 * Gestisce gli eventi e in base ad essi chiama i metodi {@link AppPanel#startBtnAction} o {@link AppPanel#fileBtnAction()} <br>
+	 * Inoltre gestisce anche l'evento dell'eliminazione del Job dall'interfaccia, questo evento è generato da {@link JobUI}
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		JButton buttonClicked = (JButton)e.getSource();
-		System.out.println(buttonClicked);
+		//JButton buttonClicked = (JButton)e.getSource();
+		//System.out.println(buttonClicked);
 		if(e.getSource() == startBtn) {
 			startBtnAction();	
 			//Thread pbarThread = new Thread(this.pBar);
@@ -182,11 +211,19 @@ public abstract class AppPanel<Job extends JobUI> extends JPanel implements Acti
 		}
 	}
 	
+	/**
+	 * Aggiunge il Job all'interfaccia con il corrispondente ActionListener
+	 * @param job
+	 */
 	protected void addJob(Job job) {
 		jobQueue.add(job);
 		job.delBtn.addActionListener(this);
 	}
-
+	
+	/**
+	 * Rimuove il Job dall'interfaccia e dall'array {@link AppPanel#jobQueue}
+	 * @param job
+	 */
 	protected void removeJob(Job job) {
 		container.remove(job);
 		jobQueue.remove(job);
@@ -194,6 +231,9 @@ public abstract class AppPanel<Job extends JobUI> extends JPanel implements Acti
 		repaint();
 	}
 	
+	/**
+	 * Rimuove tutti gli oggetti dall'interfaccia e svuota l'array {@link AppPanel#jobQueue}
+	 */
 	protected void clearContainer() {
 		/*
 		Component[] componentList = container.getComponents();
@@ -209,8 +249,9 @@ public abstract class AppPanel<Job extends JobUI> extends JPanel implements Acti
 	}
 	
 	/**
-	 * Define the type of UI element to be added, the subclass needs to pass down the type of Job (JobUI, SplitJobUI, ...)
-	 * This also add the element to the mainQueue
+	 * Definisce il tipo di elemento che si può aggiungere alla UI.<br>
+	 * Chi chiama il metodo deve specificare il tipo di oggetto da aggiungere (JobUI, SplitJobUI, ...). <br>
+	 * Il metodo aggiunge l'oggetto a {@link AppPanel#mainQueue}
 	 */
 	protected void addElementToContainer(Job job) {
 		container.add(job);
@@ -221,19 +262,23 @@ public abstract class AppPanel<Job extends JobUI> extends JPanel implements Acti
 	}	
 	
 	/**
-	 * 
+	 * Le classi concrete devono specificare il tipo di oggetto che verra restituito (JobUI, SplitJobUI, ...)
 	 * @param index
-	 * @return the instanced Object for the Job
+	 * @return
 	 */
 	protected abstract Job getJob(int index) ;
 	
 	/**
-	 * The implementation of the action for the start button is delegated to the child class
+	 * L'implementazione è delegata alla classe concreta <br>
+	 * Tramite il metodo si può descrivere il comportamento del bottone "Start" <br>
+	 * Il bottone start eseguirà, a prescindere dall'implementazione del metodo, {@link com.artattack.DivisionHandler#execute()} e 
+	 * {@link AppPanel#clearContainer()}
 	 */
 	protected abstract void startBtnAction();
 
 	/**
-	 * The implementation of the action for the file button is delegated to the child class
+	 * L'implementazione è delegata alla classe concreta <br>
+	 * Tramite il metodo si può descrivere il comportamento del bottone "File"
 	 */
 	protected abstract void fileBtnAction();
 	
