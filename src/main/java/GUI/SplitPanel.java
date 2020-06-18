@@ -10,7 +10,17 @@ import com.artattack.DimDiv;
 import com.artattack.FileDiv;
 import com.artattack.PartDiv;
 
-public class SplitPanel extends AppPanel{
+/**
+ * Classe concreta che implementa il pannello di divisione dei file, utilizza l'oggetto SplitJobUI. <br>
+ * 
+ * Il metodo {@link SplitPanel#startBtnAction()} scorre l'oggetto {@link AppPanel#jobQueue} e riempe l'oggetto {@link AppPanel#mainQueue}
+ * impostando tutti i valori immessi tramite l'interfaccia grafica (password, numero di parti, ecc.)
+ * 
+ * @author marco
+ *
+ */
+
+public class SplitPanel extends AppPanel<SplitJobUI>{
 
 	public SplitPanel(int w, int h, String textType) {
 		super(w, h, textType);
@@ -22,7 +32,10 @@ public class SplitPanel extends AppPanel{
 		jobQueue = new ArrayList<SplitJobUI>();
 	}
 	
-
+	/**
+	 * Scorre l'oggetto {@link AppPanel#jobQueue} e riempe {@link AppPanel#mainQueue} con oggetti di tipo {@link com.artattack.FileDiv},
+	 * {@link com.artattack.PartDiv} o {@link com.artattack.DimDiv} in base alla tipologia di divisione scelta
+	 */
 	@Override
 	protected void startBtnAction() {
 		
@@ -69,7 +82,11 @@ public class SplitPanel extends AppPanel{
 		
 		//System.out.println(splitQueue.toString());
 	}
-
+	
+	
+	/**
+	 * Apre un JFileChooser e chiama il metodo {@link AppPanel#addElementToContainer(JobUI)} passando un oggetto di tipo {@link SplitJobUI}
+	 */
 	@Override
 	protected void fileBtnAction() {
 		//addElementToContainer();

@@ -7,7 +7,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
- * Define the UI of a single Job
+ * Definisce l'interfaccia grafica del singolo job che di base prevede:
+ * <ul>
+ * 		<li>una label contenente la path del file</li>
+ * 		<li>un bottone X per l'eliminazione del Job dall'interfaccia</li>
+ * </ul>
  * @author marco
  *
  */

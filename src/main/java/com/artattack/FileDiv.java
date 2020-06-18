@@ -21,35 +21,44 @@ import java.util.zip.*;
 
 /**
  * 
- * Questa classe è quella che definisce il comportamento di una generale routine di divisione
+ * Questa è la classe padre che definisce il comportamento di una generale routine di divisione.
  * <br>
- *  Di default questa classe divide il file in parti uguali da 4 Kb l'una, ad ongi modo la grandezza di ogni parte può essere specificata
+ *  Di default questa classe divide il file in parti uguali da 4 Kb l'una, la grandezza di ogni parte può comunque essere specificata.
  * <br>
- * The {@link FileDiv#splitmode splitmode} property determine the usage of the class, 
  * La proprietà {@link FileDiv#splitmode splitmode} determina se la classe verrà usata per le operazion di divisione o di unione, 
- * se impostata a valore {@code true} il file passato tramite il costruttre sarà diviso
- * se impostata a {@ false} il file passato deve essere il primo generato dalla divisione (Ex : 
- * {@code file0.frame.txt} )
+ * se impostata a valore {@code true} il file passato tramite il costruttre sarà diviso,
+ * se impostata a {@code false} il file passato deve essere il primo generato dalla divisione (Ex : 
+ * {@code file0.frame.txt} ) per poter eseguire l'unione.
  * <br>
  * 
- * La classe implementa anche l'interfaccia {@code Runnable} in modo che si può affidare la divisione/unione del file ad un
- * singolo thread ({@link FileDiv#run run})
- * 
+ * La classe implementa anche l'interfaccia {@code Runnable} in modo che si possa affidare la divisione/unione di ogni ad un
+ * singolo thread ({@link FileDiv#run}).
+ * <br>
  * Questo tool utilizza la libreria Tink per criptare e decriptare i dati con la  <a href ="https://github.com/google/tink/blob/master/docs/JAVA-HOWTO.md">Symmetric Key Encryption</a>
  * @author marco
  *
  */
 public class FileDiv implements Runnable{
+	
+	/**
+	 * se impostata a {@code true} il file passato alla classe verrà criptato (se {@link FileDiv#splitmode splitmode} è {@code true})
+	 * o decriptato ((se {@link FileDiv#splitmode splitmode} è {@code false})
+	 */
 	protected boolean encrypted;
+	
+	/**
+	 * se impostata a {@code true} il file passato alla classe verrà compresso (se {@link FileDiv#splitmode splitmode} è {@code true})
+	 * o decompresso ((se {@link FileDiv#splitmode splitmode} è {@code false})
+	 */
 	protected boolean zipped;
 	
 	/**
-	 * splitmode determina come verrà utilizzata la calsse, se impsotata a true il metodo {@link FileDiv#DivideFile DivideFile} può essere
+	 * splitmode determina come verrà utilizzata la calsse, se impostata a true il metodo {@link FileDiv#DivideFile DivideFile} può essere
 	 * utilizzato, altrimenti si potrà utilizzare il metodo {@link FileDiv#MergeFile MergeFile} per l'unione
 	 * 
 	 */
-	
 	protected boolean splitmode;
+	
 	/**
 	 * se {@link FileDiv#splitmode splitmode} è impostata a {@code true} , filename rappresenta il file da dividere,
 	 * se {@code false} filename rapprenseta il primo file generato dal metodo {@link FileDiv#DivideFile DivideFile}
@@ -57,12 +66,12 @@ public class FileDiv implements Runnable{
 	protected String filename;
 	
 	/**
-	 * Definisce la dimensione di ogni file dopo la divisione
+	 * Definisce la dimensione di ogni singolo file dopo la divisione
 	 */
 	protected int BufferSize = 4096;
 	
 	/**
-	 * psw ha un valore se la proprietà {@link FileDiv#encrypted encrypted} è impostata a {@code true}
+	 * psw ha un valore se la proprietà {@link FileDiv#encrypted encrypted} è impostata a {@code true},
 	 * rappresenta la password utilizzata per criptare i file 
 	 */
 	protected String psw = null;
@@ -82,13 +91,14 @@ public class FileDiv implements Runnable{
 	protected String CRYPTs = "";
 	
 	/**
-	 * impostata con la costante {@value FileDiv#ZIP} se la proprietà {@link FileDiv#zipped zipped è {@code true}
+	 * impostata con la costante {@value FileDiv#ZIP} se la proprietà {@link FileDiv#zipped zipped} è {@code true}
 	 * il valore viene impostato nel metodo {@link FileDiv#setZipped setZipped}
 	 */
 	protected String ZIPs = "";
 	
 	/**
-	 * l'estensione del file di output, rappresenta anche il tipo di operazione utilizzata, nonchè la classe utilizzata
+	 * l'estensione del file di output, rappresenta anche il tipo di operazione utilizzata, ovvero la classe utilizzata. Le classi figlie
+	 * modificheranno questa proprietà per identificare il tipo di divisione che svolgeranno
 	 */
 	protected String EXT = ".frame";
 	final String CRYPT = ".crypt";
@@ -142,7 +152,7 @@ public class FileDiv implements Runnable{
 	
 	
 	/**
-	 * Chiama {@link FileDiv#DivideFile DivideFile} o {@link FileDiv#DiviMergeFile MergeFile} in base a {@link FileDiv#splitmode splitmode}
+	 * Chiama {@link FileDiv#DivideFile DivideFile} o {@link FileDiv#MergeFile MergeFile} in base a {@link FileDiv#splitmode splitmode}
 	 */
 	@Override
 	public void run() {
@@ -159,9 +169,10 @@ public class FileDiv implements Runnable{
 	}
 	
 	/**
-	 * Divide il file in parti uguali in base al valore di {@link FileDiv#BufferSize BufferSize}
-	 * <br>
-	 * Usa il metodo {@link FileDiv#readWrite readWrite} per scrivere
+	 * Divide il file in parti uguali in base al valore di {@link FileDiv#BufferSize BufferSize} .<br>
+	 * Usa il metodo {@link FileDiv#readWrite readWrite} per scrivere. <br>
+	 * Se il file è criptato o compresso verranno aggiunte le estensioni {@link FileDiv#CRYPT} o {@link FileDiv#ZIP} alla parte generata. <br>
+	 * Le parti generate hanno il formato nomefile+indice.formatodivisione+estensionefile {@literal ---> } file0.frame.txt, gli indici partono da 0. <br>
 	 * 
 	 * @return Il numero di parti, -1 se l'operazione fallisce, 0 se {@link FileDiv#splitmode splitmode} è false
 	 */
@@ -209,12 +220,13 @@ public class FileDiv implements Runnable{
 	
 	/**
 	 * Prende il primo file generato in un'altra istanza dal metodo {@link FileDiv#DivideFile DivideFile}
-	 * e unisce tutte le parti in un unico file <br>
-	 * Di default il metodo non elemina le singole parti
-	 * Se il metodo deve unire dei file zippati, prima li unzippa (file0.frame.txt.zip ---> file0.frame.txt) e poi li unisce tutti insieme
-	 * @return 1 se l'operazione è portata a termine, 0 altrimenti
-	 * @throws IOException L'eccezione è lanciata dal catch {@code FileNotFoundException} se il file passato al costruttore non esiste, altrimenti ritorna
-	 * 1 se l'operazione è terminata con successo
+	 * e unisce tutte le parti in un unico file. <br>
+	 * Le varie parti devono essere tutte nella stessa directory e si presuppone che siano nel formato (nomefile+indice.formatodivisione+estensionefile) {@literal --->} filename1.frame.txt <br> 
+	 * Di default il metodo, dopo l'unione, non elemina le singole parti. <br>
+	 * Se il metodo deve unire dei file compressi, prima li decomprime (file0.frame.txt.zip {@literal --->} file0.frame.txt) e poi li unisce tutti insieme, lo stesso vale per i file criptati <br>
+	 * @return 1 se l'operazione è portata a termine, 0 altrimenti.
+	 * @throws IOException L'eccezione è lanciata dal catch {@code FileNotFoundException} se il file passato al costruttore non esiste, 
+	 * altrimenti vuol dire che l'eccezione catturata è dovuta al fatto che l'operazione di unione è stata terminata
 	 */
 	public int MergeFile() throws IOException {
 		if(!isSplitmode()) {
@@ -265,7 +277,7 @@ public class FileDiv implements Runnable{
 	/**
 	 * Il metodo legge da {@code source} {@code numBytes} bytes e li scrive in {@code dest}
 	 * <br> Se {@link FileDiv#encrypted encrypted} è true e 
-	 * {@link FileDiv#splitmode splitmode} è true cripta i dati o decripta sef {@link FileDiv#splitmode splitmode} è false
+	 * {@link FileDiv#splitmode splitmode} è true cripta i dati o decripta se {@link FileDiv#splitmode splitmode} è false
 	 * <br>
 	 * Di default il metodo non chiude la stream {@code source}
 	 * 
@@ -303,7 +315,6 @@ public class FileDiv implements Runnable{
 	/**
 	 * Comprime il file passato alla funzione
 	 * @param filename Il file da comprimere
-	 * @throws IOException
 	 */
 	protected void zipFile(String filename) throws IOException{
 		FileInputStream fis = new FileInputStream(filename);
@@ -322,10 +333,9 @@ public class FileDiv implements Runnable{
 	}
 	
 	/**
-	 * Unzip il file {@code zippedFilename} e ritorna il nome del file unzipped,
-	 * Se la classe non ha {@link FileDiv#zipped zipepd} a true ritorna il nome del file passato
-	 * @param zippedFilename Il fiel da unzippare
-	 * @throws IOException
+	 * Decomprime il file {@code zippedFilename} e ritorna il nome del file 
+	 * @param zippedFilename Il file da decomprimere
+	 * @return Se la classe non ha {@link FileDiv#zipped zipped} a {@code true} ritorna il nome del file passato, altrimenti il nome del file decompresso
 	 */
 	protected String unzipFile(String zippedFilename) throws IOException{
 		if(isZipped()) {
@@ -356,7 +366,7 @@ public class FileDiv implements Runnable{
 	
 	/**
 	 * Estrae il noem dal file (rimuove l'estensione)
-	 * Se la classe è usata in merge-mode, la funzione rimuove {@value FileDiv#EXT} dal nome del file
+	 * Se la classe è usata in merge-mode, la funzione rimuove {@link FileDiv#EXT} dal nome del file
 	 * @param filename {@link FileDiv#filename filename}
 	 * @return Ex : {@code file1.txt ---> file1} o se {@link FileDiv#splitmode splitmode} = {@code false} 
 	 * {@code file0.frame.txt ---> file0}
@@ -390,10 +400,10 @@ public class FileDiv implements Runnable{
 	}
 	
 	/**
-	 * Il metodo geneare il nome della singola parte del file diviso in base anche a {@link FileDiv#encrypted encrypted} 
+	 * Il metodo genera il nome della singola parte del file che si sta dividendo in base a {@link FileDiv#encrypted encrypted} 
 	 * e all'index della parte<br>
 	 * 
-	 * La costante {@value FileDiv#EXT} definisce il tipo di divisione utilizzata
+	 * La costante {@link FileDiv#EXT} definisce il tipo di divisione utilizzata
 	 * 
 	 * @param index L'indice della parte del file
 	 * @return IL nome della parte del file
@@ -432,7 +442,7 @@ public class FileDiv implements Runnable{
 	}
 	
 	/**
-	 * Prende la key da lfile {@value FileDiv#keyArchive}
+	 * Prende la key dal file {@value FileDiv#keyArchive}
 	 * @return the KeysetHandle object 
 	 */
 	protected KeysetHandle getKeyFromArchive() {
@@ -480,7 +490,7 @@ public class FileDiv implements Runnable{
 	}
 
 	/**
-	 * if {@code zipped} is true it also set the {@link FileDiv#ZIPs ZIPs} property to {@value FileDiv#ZIP}
+	 * se {@code zipped} è {@code true} imposta la proprietà {@link FileDiv#ZIPs ZIPs} a {@value FileDiv#ZIP}
 	 * @param zipped the zipped to set
 	 */
 	public void setZipped(boolean zipped) {

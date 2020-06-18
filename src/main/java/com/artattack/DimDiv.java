@@ -8,7 +8,8 @@ import java.io.RandomAccessFile;
 import java.util.ArrayList;
 
 /**
- * In questa classe si utilizza un arraylist per la gestione della divisione, inoltre viene sovrascritto il metodo {@link DimDiv#DivideFile DivideFile} 
+ * In questa classe si utilizza un arraylist, che deve essere passato al costruttore o impostato in seguito,
+ * per la gestione della divisione, inoltre viene sovrascritto il metodo {@link FileDiv#DivideFile DivideFile} 
  * @author marco
  *
  */
@@ -17,15 +18,15 @@ public class DimDiv extends FileDiv{
 	/**
 	 * L'arraylist è utilizzato per memorizzare la grandezza di ogni parte, esso deve essere gestito
 	 * dall'utilizzatore della classe <br>
-	 * 
+	 * L'ordine in cui vengono inserite le grandezze rappresenta le dimensioni delle parti che verranno generate <br>.
 	 * Di default divide il file in 2 parti uguali
 	 */
 	public ArrayList<Long> division = new ArrayList<Long>();
 	
 	/**
  	 * 
-	 * @param fname
-	 * @param mode
+	 * @param fname il nome del file 
+	 * @param mode true se in modalità divisione, false se in modalità unione
 	 */
 	public DimDiv(String fname, boolean mode) {
 		super(fname, mode);
@@ -50,7 +51,7 @@ public class DimDiv extends FileDiv{
 	/**
 	 * Divide il file basandosi sull'array {@link DimDiv#division division}, se vuoto lo divide in due parti uguali
 	 * 
-	 * @return il numero di parti, -1 se l'operazione fallisce 0 if se splitmode è false
+	 * @return il numero di parti se l'operazione ha successo, -1 se l'operazione fallisce, 0 se splitmode è false
 	 */
 	public long DivideFile() {
 		if(isSplitmode()) {

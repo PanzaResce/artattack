@@ -3,7 +3,7 @@ package com.artattack;
 import java.io.File;
 
 /**
- * Questa classe è utilizzata per dividere i file in N parti uguali
+ * Questa classe è utilizzata per dividere i file in N parti uguali <br>
  * 
  * Per le operazioni di divisione e unione viene chiamata il metodo del padre 
  * {@link FileDiv#DivideFile DivideFile} o {@link FileDiv#MergeFile MergeFile} senza override
@@ -21,7 +21,7 @@ public class PartDiv extends FileDiv{
 	
 	/**
 	 * 
-	 * In base al numero di parti passate, si imposta il valore del buffer di divisine/unione
+	 * In base al numero di parti passate, si imposta il valore del buffer di divisione
 	 * 
 	 * @param fname il nome del file
 	 * @param numparts Il numero di parti in cui il file verrà diviso
@@ -40,8 +40,8 @@ public class PartDiv extends FileDiv{
 	 * Questo costruttore è usato in particolare per la modalità unione, infatti
 	 * il numero di parti non è necessario
 	 * 
-	 * @param fname
-	 * @param mode
+	 * @param fname il nome del file
+	 * @param mode true se in modalità divisione, false se in modalità unione
 	 */
 	public PartDiv(String fname, boolean mode) {
 		super(fname, mode);
@@ -51,13 +51,10 @@ public class PartDiv extends FileDiv{
 	}
 	
 	/**
-	 * Costruttore usato se le operazioni di criptaggio e compressioen sono richieste
+	 * Costruttore usato se le operazioni di criptaggio e compressione sono richieste
 	 * 
-	 * @param fname
-	 * @param mode
-	 * @param crypt
-	 * @param zip
-	 * @param numparts
+	 * @param fname il nome del file
+	 * @param mode true se in modalità divisione, false se in modalità unione
 	 */
 	public PartDiv(String fname, boolean mode, boolean crypt, boolean zip) {
 		super(fname, mode, crypt, zip);
@@ -72,7 +69,7 @@ public class PartDiv extends FileDiv{
 	 * @param mode
 	 * @param crypt
 	 * @param zip
-	 * @param numparts
+	 * @param numparts il numero di parti nel quale si vuole dividere il file	 
 	 */
 	public PartDiv(String fname, boolean mode, boolean crypt, boolean zip, int numparts) {
 		super(fname, mode, crypt, zip);
@@ -85,7 +82,7 @@ public class PartDiv extends FileDiv{
 	
 	
 	/**
-	 * Chiamata dal costruttore per impostare la corretta grandezza di ogni buffer in base a {@link ParteDiv#numParts numParts} 
+	 * Chiamata dal costruttore per impostare la corretta grandezza di ogni buffer in base a {@link PartDiv#numParts numParts} 
 	 */
 	public void setBufferSize() {
 		File f = new File(getFilename());

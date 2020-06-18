@@ -10,6 +10,17 @@ import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 
+/**
+ * Imposta l'interfaccia generale dell'applicativo <br>
+ * 
+ * L'area viene divisa in due sottoaree mediante l'oggetto {@link JSplitPane}, con a destra e sinistra rispettivamente le aree di divisione e unione. <br>
+ * 
+ * Tramite i metodi {@link AppFrame#setJpl} e {@link AppFrame#setJpr} si impostano gli oggetti {@link MergePanel} e {@link SplitPanel}, 
+ * entrambi i pannelli ereditano da {@link AppPanel} che imposta l'interfaccia base e funge da {@link AppPanel#actionPerformed(java.awt.event.ActionEvent) Listener} per gli eventi
+ * 
+ * @author marco
+ *
+ */
 public class AppFrame extends JFrame{
 	
 	private int width = 1920;
@@ -123,7 +134,8 @@ public class AppFrame extends JFrame{
 	}
 
 	/**
-	 * @param jpl the jpl to set
+	 * Viene impostato con un oggetto di tipo {@link MergePanel}
+	 * @param w
 	 */
 	public void setJpl(int w, int h, Color c) {
 		this.jpl = new MergePanel(w, h, c, "Unisci File");
@@ -137,7 +149,8 @@ public class AppFrame extends JFrame{
 	}
 
 	/**
-	 * @param jpr the jpr to set
+	 * Viene impostato con un oggetto di tipo {@link SplitPanel}
+	 * @param w
 	 */
 	public void setJpr(int w, int h, Color c) {
 		this.jpr =  new SplitPanel(w, h, c, "Dividi File");
