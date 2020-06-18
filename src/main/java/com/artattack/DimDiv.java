@@ -18,7 +18,7 @@ public class DimDiv extends FileDiv{
 	/**
 	 * L'arraylist è utilizzato per memorizzare la grandezza di ogni parte, esso deve essere gestito
 	 * dall'utilizzatore della classe <br>
-	 * L'ordine in cui vengono inserite le grandezze rappresenta le dimensioni delle parti che verranno generate <br>.
+	 * L'ordine in cui vengono inserite le grandezze rappresenta le dimensioni delle parti che verranno generate. <br>
 	 * Di default divide il file in 2 parti uguali
 	 */
 	public ArrayList<Long> division = new ArrayList<Long>();
@@ -106,7 +106,7 @@ public class DimDiv extends FileDiv{
 
 
 	/**
-	 * @param division the division to set
+	 * @param division
 	 */
 	public void setDivision(ArrayList<Long> division) {
 		this.division = division;

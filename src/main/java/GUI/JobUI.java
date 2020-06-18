@@ -12,20 +12,20 @@ import javax.swing.JPanel;
  * 		<li>una label contenente la path del file</li>
  * 		<li>un bottone X per l'eliminazione del Job dall'interfaccia</li>
  * </ul>
+ * 
+ * Utilizza un FlowLayout
  * @author marco
  *
  */
 public class JobUI extends JPanel{
 	
-	/**
-	 * Index for insert order in the UI 
-	 */
 	protected int index = -1;
 	
 	protected JButton delBtn = new JButton("x");
 	protected JLabel fileName;
+	
 	/**
-	 * Padding between each element of the job
+	 * Padding tra i vari elementi
 	 */
 	protected int jobPadding = 20;
 
@@ -54,7 +54,7 @@ public class JobUI extends JPanel{
 
 
 	/**
-	 * @param index the index to set
+	 * @param index 
 	 */
 	public void setIndex(int index) {
 		this.index = index;
@@ -70,7 +70,7 @@ public class JobUI extends JPanel{
 	}
 
 	/**
-	 * @param fileName the fileName to set
+	 * @param fileName 
 	 */
 	public void setFileName(JLabel fileName) {
 		this.fileName = fileName;
@@ -84,7 +84,7 @@ public class JobUI extends JPanel{
 	}
 
 	/**
-	 * @param delBtn the delBtn to set
+	 * @param delBtn 
 	 */
 	public void setDelBtn(JButton delBtn) {
 		this.delBtn = delBtn;

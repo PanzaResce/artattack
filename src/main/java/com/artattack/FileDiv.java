@@ -21,17 +21,20 @@ import java.util.zip.*;
 
 /**
  * 
- * Questa è la classe padre che definisce il comportamento di una generale routine di divisione.
+ * Questa è la classe padre che definisce il comportamento di una generale routine di divisione/unione.
  * <br>
- *  Di default questa classe divide il file in parti uguali da 4 Kb l'una, la grandezza di ogni parte può comunque essere specificata.
+ *  Di default questa classe divide il file in parti uguali da 4 Kb l'una, la grandezza per ogni parte può comunque essere specificata.
  * <br>
  * La proprietà {@link FileDiv#splitmode splitmode} determina se la classe verrà usata per le operazion di divisione o di unione, 
  * se impostata a valore {@code true} il file passato tramite il costruttre sarà diviso,
  * se impostata a {@code false} il file passato deve essere il primo generato dalla divisione (Ex : 
- * {@code file0.frame.txt} ) per poter eseguire l'unione.
+ * {@code file0.frame.txt} ) per poi poter eseguire l'unione.
  * <br>
  * 
- * La classe implementa anche l'interfaccia {@code Runnable} in modo che si possa affidare la divisione/unione di ogni ad un
+ * I metodi che eseguono la divisione e l'unione sono rispettivamente {@link FileDiv#DivideFile()} e {@link FileDiv#MergeFile()}.
+ * <br>
+ * 
+ * La classe implementa anche l'interfaccia {@code Runnable} in modo che si possa affidare la divisione/unione di ogni file ad un
  * singolo thread ({@link FileDiv#run}).
  * <br>
  * Questo tool utilizza la libreria Tink per criptare e decriptare i dati con la  <a href ="https://github.com/google/tink/blob/master/docs/JAVA-HOWTO.md">Symmetric Key Encryption</a>

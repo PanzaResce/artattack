@@ -11,7 +11,7 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 
 /**
- * Imposta l'interfaccia generale dell'applicativo <br>
+ * Imposta l'interfaccia generale dell'applicativo. <br>
  * 
  * L'area viene divisa in due sottoaree mediante l'oggetto {@link JSplitPane}, con a destra e sinistra rispettivamente le aree di divisione e unione. <br>
  * 
@@ -47,7 +47,11 @@ public class AppFrame extends JFrame{
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 	
-	
+	/**
+	 * L'interfaccia è impostata mediane un JSplitPane, che divide l'area in due parti uguali che si possono ridimensionare. <br>
+	 * Il metodo aggiunge lo JSplitPane al container
+	 * @return
+	 */
 	public JSplitPane setSplitPane() {
 		JSplitPane splitPane = new JSplitPane();
         splitPane.setSize(getWidth(), getHeight());
