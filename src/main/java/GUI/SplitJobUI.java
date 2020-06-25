@@ -46,7 +46,7 @@ public class SplitJobUI extends JobUI{
 	protected JLabel txtFieldLabel;
 	protected JTextField numPartField;
 	
-	protected ImageIcon settingsIcon = new ImageIcon("src/main/resources/settings.png");
+	protected ImageIcon settingsIcon = new ImageIcon("classes/settings.png");
 	protected JButton dimdivButton;
 	
 	protected JTextField pswField;
